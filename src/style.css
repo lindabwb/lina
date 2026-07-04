@@ -21,11 +21,11 @@
   --shadow: 0 18px 45px rgba(24, 33, 47, .08);
   --shadow-soft: 0 8px 22px rgba(24, 33, 47, .06);
   --ring: 0 0 0 3px rgba(15, 118, 110, .13);
-  --glass: rgba(255, 255, 255, .54);
-  --glass-strong: rgba(255, 255, 255, .68);
-  --glass-field: rgba(255, 255, 255, .42);
-  --glass-line: rgba(255, 255, 255, .66);
-  --glass-shadow: 0 18px 48px rgba(24, 33, 47, .10);
+  --glass: rgba(255, 255, 255, .62);
+  --glass-strong: rgba(255, 255, 255, .76);
+  --glass-field: rgba(255, 255, 255, .52);
+  --glass-line: rgba(255, 255, 255, .54);
+  --glass-shadow: 0 22px 60px rgba(2, 6, 23, .22);
 }
 
 * {
@@ -35,12 +35,12 @@
 body {
   margin: 0;
   min-width: 320px;
-  background: #f5fbfc;
+  background: #030712;
 }
 
 .ditherBackground {
   inset: 0;
-  opacity: .58;
+  opacity: .92;
   pointer-events: auto;
   position: fixed;
   z-index: 0;
@@ -48,8 +48,8 @@ body {
 
 .ditherBackground::after {
   background:
-    linear-gradient(180deg, rgba(248, 251, 252, .06), rgba(248, 251, 252, .42)),
-    radial-gradient(circle at 50% 34%, transparent 0%, rgba(248, 251, 252, .26) 76%);
+    radial-gradient(circle at 50% 16%, transparent 0%, rgba(3, 7, 18, .10) 58%, rgba(3, 7, 18, .42) 100%),
+    linear-gradient(180deg, rgba(3, 7, 18, .04), rgba(3, 7, 18, .28));
   content: "";
   inset: 0;
   pointer-events: none;
@@ -58,9 +58,8 @@ body {
 
 .ditherFallback {
   background:
-    radial-gradient(circle at 18% -8%, rgba(20, 184, 166, .18), transparent 32%),
-    radial-gradient(circle at 88% 0%, rgba(37, 99, 235, .10), transparent 26%),
-    linear-gradient(180deg, #f8fbfc 0%, #eef4f6 44%, #f4f7f8 100%);
+    radial-gradient(circle at 35% 0%, rgba(29, 155, 240, .34), transparent 40%),
+    linear-gradient(180deg, #030712 0%, #07111f 100%);
   height: 100%;
   width: 100%;
 }
@@ -96,7 +95,7 @@ button:disabled {
 
 .authPanel {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, .68), rgba(255, 255, 255, .48)),
+    linear-gradient(180deg, rgba(255, 255, 255, .66), rgba(255, 255, 255, .44)),
     radial-gradient(circle at 15% 0%, rgba(20, 184, 166, .12), transparent 38%);
   backdrop-filter: blur(22px) saturate(142%);
   -webkit-backdrop-filter: blur(22px) saturate(142%);
@@ -193,7 +192,7 @@ button:disabled {
 .topBar {
   align-items: center;
   background:
-    linear-gradient(120deg, rgba(255, 255, 255, .64), rgba(247, 252, 252, .42)),
+    linear-gradient(120deg, rgba(255, 255, 255, .58), rgba(235, 248, 250, .34)),
     radial-gradient(circle at 14% 0%, rgba(20, 184, 166, .16), transparent 34%);
   border: 1px solid var(--glass-line);
   border-radius: 10px;
@@ -464,7 +463,7 @@ td textarea:focus,
 
 .metric {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, .62), rgba(250, 253, 253, .42));
+    linear-gradient(180deg, rgba(255, 255, 255, .56), rgba(235, 248, 250, .34));
   backdrop-filter: blur(20px) saturate(145%);
   -webkit-backdrop-filter: blur(20px) saturate(145%);
   border: 1px solid var(--glass-line);
@@ -520,7 +519,7 @@ td textarea:focus,
 }
 
 .tableSection {
-  background: rgba(255, 255, 255, .48);
+  background: rgba(255, 255, 255, .40);
   backdrop-filter: blur(22px) saturate(145%);
   -webkit-backdrop-filter: blur(22px) saturate(145%);
   border: 1px solid var(--glass-line);
@@ -549,7 +548,7 @@ td textarea:focus,
 .planningPanel {
   animation: panelIn .18s ease-out;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, .76), rgba(247, 251, 252, .58));
+    linear-gradient(180deg, rgba(255, 255, 255, .70), rgba(235, 248, 250, .48));
   backdrop-filter: blur(26px) saturate(150%);
   -webkit-backdrop-filter: blur(26px) saturate(150%);
   border: 1px solid var(--glass-line);
@@ -569,7 +568,7 @@ td textarea:focus,
   position: sticky;
   top: 0;
   z-index: 2;
-  background: linear-gradient(180deg, rgba(255, 255, 255, .72), rgba(255, 255, 255, .42));
+  background: linear-gradient(180deg, rgba(255, 255, 255, .62), rgba(255, 255, 255, .34));
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   padding-bottom: 10px;
@@ -804,7 +803,7 @@ td textarea:focus,
 }
 
 .tableToolbar {
-  background: linear-gradient(180deg, rgba(255, 255, 255, .58), rgba(249, 252, 252, .38));
+  background: linear-gradient(180deg, rgba(255, 255, 255, .50), rgba(235, 248, 250, .30));
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border-bottom: 1px solid rgba(255, 255, 255, .58);
@@ -858,7 +857,7 @@ td {
 }
 
 th {
-  background: rgba(238, 244, 245, .76);
+  background: rgba(238, 244, 245, .58);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   color: #475467;

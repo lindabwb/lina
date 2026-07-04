@@ -1274,8 +1274,8 @@ function AppBackground() {
   return (
     <div className="ditherBackground" aria-hidden="true">
       <DitheredWaves
-        waveColor="#008888"
-        baseColor="#dff3f4"
+        waveColor="#1d9bf0"
+        baseColor="#030712"
         disableAnimation={false}
         enableMouseInteraction
         mouseRadius={0.5}
