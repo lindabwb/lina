@@ -716,8 +716,8 @@ td select {
 }
 
 td textarea {
-  height: 34px;
-  min-width: 220px;
+  height: 64px;
+  min-width: 420px;
   padding: 8px;
   resize: vertical;
   width: 100%;
@@ -775,7 +775,7 @@ td textarea {
 }
 
 .remarksCell {
-  min-width: 260px;
+  min-width: 460px;
 }
 
 .numberInput {
