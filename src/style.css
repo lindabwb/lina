@@ -36,6 +36,33 @@ body {
     linear-gradient(180deg, #f8fbfc 0%, #eef4f6 44%, #f4f7f8 100%);
 }
 
+.ditherBackground {
+  inset: 0;
+  opacity: .22;
+  pointer-events: auto;
+  position: fixed;
+  z-index: 0;
+}
+
+.ditherBackground::after {
+  background:
+    linear-gradient(180deg, rgba(248, 251, 252, .35), rgba(248, 251, 252, .78)),
+    radial-gradient(circle at 50% 30%, transparent 0%, rgba(248, 251, 252, .54) 72%);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.ditherFallback {
+  background:
+    radial-gradient(circle at 18% -8%, rgba(20, 184, 166, .18), transparent 32%),
+    radial-gradient(circle at 88% 0%, rgba(37, 99, 235, .10), transparent 26%),
+    linear-gradient(180deg, #f8fbfc 0%, #eef4f6 44%, #f4f7f8 100%);
+  height: 100%;
+  width: 100%;
+}
+
 button,
 input,
 select,
@@ -61,6 +88,8 @@ button:disabled {
   display: flex;
   min-height: 100vh;
   padding: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .authPanel {
@@ -153,6 +182,8 @@ button:disabled {
   width: min(1500px, 100%);
   margin: 0 auto;
   padding: 24px;
+  position: relative;
+  z-index: 1;
 }
 
 .topBar {
