@@ -373,6 +373,17 @@ function addDays(iso: string, days: number) {
   return date.toISOString().slice(0, 10)
 }
 
+function weekStartIso(iso: string) {
+  const date = new Date(`${iso}T00:00:00`)
+  const day = date.getDay() || 7
+  date.setDate(date.getDate() - day + 1)
+  return date.toISOString().slice(0, 10)
+}
+
+function shortDateLabel(iso: string) {
+  return new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: '2-digit', month: '2-digit' }).format(new Date(`${iso}T00:00:00`))
+}
+
 function plannedHours(course: Course, settings: Settings) {
   return round(course.pages / Math.max(settings.pagesPerHour, 0.1), 1)
 }
@@ -557,6 +568,28 @@ function App() {
       .map((item) => ({ ...item, done: Boolean(item.done) }))
       .sort((a, b) => a.date.localeCompare(b.date))
   ), [settings.customPlan])
+
+  const customWeeks = useMemo(() => {
+    const weeks = new Map<string, Map<string, PlanItem[]>>()
+    for (const item of customSchedule) {
+      const weekKey = weekStartIso(item.date)
+      if (!weeks.has(weekKey)) weeks.set(weekKey, new Map())
+      const days = weeks.get(weekKey)!
+      if (!days.has(item.date)) days.set(item.date, [])
+      days.get(item.date)!.push(item)
+    }
+
+    return [...weeks.entries()].map(([weekStart, days]) => ({
+      weekStart,
+      weekEnd: addDays(weekStart, 6),
+      days: [...days.entries()].map(([date, items]) => ({
+        date,
+        items,
+        totalHours: round(items.reduce((sum, item) => sum + item.hours, 0), 1),
+        doneHours: round(items.reduce((sum, item) => sum + (item.done ? item.hours : 0), 0), 1),
+      })),
+    }))
+  }, [customSchedule])
 
   const courseNameById = useMemo(() => new Map(courses.map((course) => [course.id, course.subject])), [courses])
   const courseById = useMemo(() => new Map(courses.map((course) => [course.id, course])), [courses])
@@ -889,30 +922,47 @@ function App() {
               </div>
             )}
 
-            <div className="planItemList">
-              {customSchedule.map((item) => (
-                <div className={`planItem ${item.done ? 'done' : ''}`} key={item.id}>
-                  <div className="planItemTop">
-                    <label className="planDoneToggle">
-                      <input type="checkbox" checked={item.done} onChange={(event) => updatePlanItem(item.id, { done: event.target.checked })} />
-                      <span>{item.done ? 'Fait' : 'A faire'}</span>
-                    </label>
-                    <input type="date" value={item.date} onChange={(event) => updatePlanItem(item.id, { date: event.target.value })} />
-                    <input type="number" min="0" step="0.25" value={item.hours} onChange={(event) => updatePlanItem(item.id, { hours: Number(event.target.value) })} />
-                    <button className="iconButton compact" type="button" title="Supprimer la seance" onClick={() => removePlanItem(item.id)}>
-                      <Trash2 size={15} />
-                    </button>
-                  </div>
-                  <select value={item.courseId} onChange={(event) => updatePlanItem(item.id, { courseId: event.target.value })}>
-                    <option value="">Choisir un cours</option>
-                    {courses.map((course) => (
-                      <option key={course.id} value={course.id}>{course.subject}</option>
-                    ))}
-                  </select>
-                  <p className="courseHoursHint">{courseHoursLabel(item.courseId)}</p>
-                  <input placeholder="Note, combinaison, objectif..." value={item.note} onChange={(event) => updatePlanItem(item.id, { note: event.target.value })} />
-                  <p>{item.courseId ? courseNameById.get(item.courseId) : 'Aucun cours selectionne'}</p>
-                </div>
+            <div className="planWeekList">
+              {customWeeks.map((week) => (
+                <section className="planWeek" key={week.weekStart}>
+                  <h3>Semaine {shortDateLabel(week.weekStart)} - {shortDateLabel(week.weekEnd)}</h3>
+                  {week.days.map((day) => (
+                    <div className="planDay" key={day.date}>
+                      <div className="planDayHeader">
+                        <strong>{shortDateLabel(day.date)}</strong>
+                        <span className={day.totalHours > settings.dailyHours ? 'over' : ''}>
+                          {day.totalHours}/{settings.dailyHours}h
+                        </span>
+                      </div>
+                      <div className="planItemList">
+                        {day.items.map((item) => (
+                          <div className={`planItem ${item.done ? 'done' : ''}`} key={item.id}>
+                            <div className="planItemTop">
+                              <label className="planDoneToggle">
+                                <input type="checkbox" checked={item.done} onChange={(event) => updatePlanItem(item.id, { done: event.target.checked })} />
+                                <span>{item.done ? 'Fait' : 'A faire'}</span>
+                              </label>
+                              <input type="date" value={item.date} onChange={(event) => updatePlanItem(item.id, { date: event.target.value })} />
+                              <input type="number" min="0" step="0.25" value={item.hours} onChange={(event) => updatePlanItem(item.id, { hours: Number(event.target.value) })} />
+                              <button className="iconButton compact" type="button" title="Supprimer la seance" onClick={() => removePlanItem(item.id)}>
+                                <Trash2 size={15} />
+                              </button>
+                            </div>
+                            <select value={item.courseId} onChange={(event) => updatePlanItem(item.id, { courseId: event.target.value })}>
+                              <option value="">Choisir un cours</option>
+                              {courses.map((course) => (
+                                <option key={course.id} value={course.id}>{course.subject}</option>
+                              ))}
+                            </select>
+                            <p className="courseHoursHint">{courseHoursLabel(item.courseId)}</p>
+                            <input placeholder="Note, combinaison, objectif..." value={item.note} onChange={(event) => updatePlanItem(item.id, { note: event.target.value })} />
+                            <p>{item.courseId ? courseNameById.get(item.courseId) : 'Aucun cours selectionne'}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </section>
               ))}
               {!customSchedule.length && <p className="empty">Ajoute tes seances avec les cours et les heures que tu veux.</p>}
             </div>

@@ -446,9 +446,54 @@ td textarea:focus,
 }
 
 .customPlanner,
-.planItemList {
+.planItemList,
+.planWeekList {
   display: grid;
   gap: 10px;
+}
+
+.planWeek {
+  display: grid;
+  gap: 10px;
+}
+
+.planWeek h3 {
+  color: #344054;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0;
+  margin: 4px 0 0;
+}
+
+.planDay {
+  border-left: 3px solid #cfe7e2;
+  display: grid;
+  gap: 8px;
+  padding-left: 8px;
+}
+
+.planDayHeader {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.planDayHeader strong {
+  font-size: 13px;
+}
+
+.planDayHeader span {
+  background: #e6f4f1;
+  border-radius: 999px;
+  color: var(--teal);
+  font-size: 12px;
+  font-weight: 900;
+  padding: 3px 8px;
+}
+
+.planDayHeader span.over {
+  background: #fee2e2;
+  color: var(--red);
 }
 
 .customPlanSummary {
