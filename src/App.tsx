@@ -1158,14 +1158,6 @@ function App() {
                             <Link size={14} />
                           </button>
                         </div>
-                        <input
-                          className="subjectEdit"
-                          value={course.subject}
-                          onChange={(event) => {
-                            const subject = event.target.value
-                            updateCourse(course.id, { subject })
-                          }}
-                        />
                       </td>
                       <td><NumberInput value={course.pages} onChange={(pages) => updateCourse(course.id, { pages })} /></td>
                       <td className="goalCell">{goal}h</td>

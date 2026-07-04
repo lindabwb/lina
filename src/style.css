@@ -755,10 +755,6 @@ td textarea {
   color: var(--muted);
 }
 
-.subjectEdit {
-  font-size: 12px;
-}
-
 .linkEditButton {
   align-items: center;
   background: transparent;
