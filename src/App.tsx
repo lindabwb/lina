@@ -586,9 +586,6 @@ function App() {
     }))
   }, [customSchedule])
 
-  const courseNameById = useMemo(() => new Map(courses.map((course) => [course.id, course.subject])), [courses])
-  const courseById = useMemo(() => new Map(courses.map((course) => [course.id, course])), [courses])
-
   const updateCourse = (id: string, patch: Partial<Course>) => {
     setCourses((current) => current.map((course) => (course.id === id ? { ...course, ...patch } : course)))
   }
@@ -601,14 +598,6 @@ function App() {
     const value = window.prompt('Lien PDF du cours', course.pdfUrl)
     if (value === null) return
     updateCourse(course.id, { pdfUrl: value.trim() })
-  }
-
-  const selectedDraftCourse = planDraft.courseId ? courseById.get(planDraft.courseId) : null
-
-  const courseHoursLabel = (courseId: string) => {
-    const course = courseById.get(courseId)
-    if (!course) return 'Choisis un cours pour voir les heures.'
-    return `Besoin cours: ${totalCourseHours(course, settings)}h | Pass1 goal: ${plannedHours(course, settings)}h`
   }
 
   const startPlanItem = () => {
@@ -903,10 +892,7 @@ function App() {
                     <option key={course.id} value={course.id}>{course.subject}</option>
                   ))}
                 </select>
-                <p className="courseHoursHint">
-                  {selectedDraftCourse ? courseHoursLabel(selectedDraftCourse.id) : 'Choisis un cours pour voir les heures.'}
-                </p>
-                <input placeholder="Note, combinaison, objectif..." value={planDraft.note} onChange={(event) => setPlanDraft((current) => ({ ...current, note: event.target.value }))} />
+                <input placeholder="Note" value={planDraft.note} onChange={(event) => setPlanDraft((current) => ({ ...current, note: event.target.value }))} />
                 <button className="primaryButton fullWidth" type="button" disabled={!planDraft.courseId} onClick={validatePlanItem}>
                   <Check size={17} /> Valider
                 </button>
@@ -945,9 +931,8 @@ function App() {
                                 <option key={course.id} value={course.id}>{course.subject}</option>
                               ))}
                             </select>
-                            <p className="courseHoursHint">{courseHoursLabel(item.courseId)}</p>
-                            <input placeholder="Note, combinaison, objectif..." value={item.note} onChange={(event) => updatePlanItem(item.id, { note: event.target.value })} />
-                            <p>{item.courseId ? courseNameById.get(item.courseId) : 'Aucun cours selectionne'}</p>
+                            <input placeholder="Note" value={item.note} onChange={(event) => updatePlanItem(item.id, { note: event.target.value })} />
+                            {item.note.trim() && <p>{item.note}</p>}
                           </div>
                         ))}
                       </div>
