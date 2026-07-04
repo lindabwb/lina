@@ -30,15 +30,12 @@
 body {
   margin: 0;
   min-width: 320px;
-  background:
-    radial-gradient(circle at 18% -8%, rgba(20, 184, 166, .18), transparent 32%),
-    radial-gradient(circle at 88% 0%, rgba(37, 99, 235, .10), transparent 26%),
-    linear-gradient(180deg, #f8fbfc 0%, #eef4f6 44%, #f4f7f8 100%);
+  background: #f5fbfc;
 }
 
 .ditherBackground {
   inset: 0;
-  opacity: .22;
+  opacity: .58;
   pointer-events: auto;
   position: fixed;
   z-index: 0;
@@ -46,8 +43,8 @@ body {
 
 .ditherBackground::after {
   background:
-    linear-gradient(180deg, rgba(248, 251, 252, .35), rgba(248, 251, 252, .78)),
-    radial-gradient(circle at 50% 30%, transparent 0%, rgba(248, 251, 252, .54) 72%);
+    linear-gradient(180deg, rgba(248, 251, 252, .06), rgba(248, 251, 252, .42)),
+    radial-gradient(circle at 50% 34%, transparent 0%, rgba(248, 251, 252, .26) 76%);
   content: "";
   inset: 0;
   pointer-events: none;
@@ -94,7 +91,7 @@ button:disabled {
 
 .authPanel {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(255, 255, 255, .90)),
+    linear-gradient(180deg, rgba(255, 255, 255, .91), rgba(255, 255, 255, .83)),
     radial-gradient(circle at 15% 0%, rgba(20, 184, 166, .12), transparent 38%);
   border: 1px solid rgba(255, 255, 255, .78);
   border-radius: 8px;
@@ -189,7 +186,7 @@ button:disabled {
 .topBar {
   align-items: center;
   background:
-    linear-gradient(120deg, rgba(255, 255, 255, .94), rgba(247, 252, 252, .84)),
+    linear-gradient(120deg, rgba(255, 255, 255, .88), rgba(247, 252, 252, .74)),
     radial-gradient(circle at 14% 0%, rgba(20, 184, 166, .16), transparent 34%);
   border: 1px solid rgba(215, 226, 230, .86);
   border-radius: 10px;
@@ -383,7 +380,7 @@ h2 {
 }
 
 .settingsGrid label {
-  background: rgba(255, 255, 255, .84);
+  background: rgba(255, 255, 255, .78);
   border: 1px solid rgba(215, 226, 230, .84);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(24, 33, 47, .04);
@@ -449,7 +446,7 @@ td textarea:focus,
 
 .metric {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, .94), rgba(250, 253, 253, .92));
+    linear-gradient(180deg, rgba(255, 255, 255, .86), rgba(250, 253, 253, .78));
   border: 1px solid rgba(215, 226, 230, .82);
   border-top: 4px solid var(--blue);
   border-radius: 8px;
@@ -503,7 +500,7 @@ td textarea:focus,
 }
 
 .tableSection {
-  background: rgba(255, 255, 255, .90);
+  background: rgba(255, 255, 255, .82);
   border: 1px solid rgba(215, 226, 230, .86);
   border-radius: 8px;
   box-shadow: var(--shadow);
