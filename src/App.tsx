@@ -858,7 +858,7 @@ function App() {
                   const delta = course.pass1Hours === null ? null : round(course.pass1Hours - goal, 1)
                   const status = statusFor(course, settings)
                   return (
-                    <tr key={course.id}>
+                    <tr className={course.pass1Hours !== null ? 'completedRow' : ''} key={course.id}>
                       <td className="subjectCell">
                         <div className="courseTitleRow">
                           {course.pdfUrl ? (

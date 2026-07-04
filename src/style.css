@@ -512,6 +512,14 @@ tr:hover td {
   background: #fbfdfd;
 }
 
+tr.completedRow td {
+  background: #f0fdf4;
+}
+
+tr.completedRow:hover td {
+  background: #e8f9ee;
+}
+
 td input,
 td select {
   height: 34px;
