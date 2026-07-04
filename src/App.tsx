@@ -944,6 +944,13 @@ function App() {
           <button className="iconButton" type="button" title="Exporter Excel" onClick={exportExcel}>
             <Download size={18} />
           </button>
+          <label className="languageControl" title="Langue">
+            <Languages size={16} />
+            <select value={settings.language} onChange={(event) => updateSettings({ language: event.target.value as Language })}>
+              <option value="en">EN</option>
+              <option value="fr">FR</option>
+            </select>
+          </label>
           <button className="iconButton" type="button" title="Reinitialiser" onClick={resetData}>
             <RotateCcw size={18} />
           </button>
@@ -976,13 +983,6 @@ function App() {
         <label>
           <span><SlidersHorizontal size={16} /> Heures par jour</span>
           <input type="number" min="0.5" step="0.5" value={settings.dailyHours} onChange={(event) => updateSettings({ dailyHours: Number(event.target.value) })} />
-        </label>
-        <label>
-          <span><Languages size={16} /> Langue</span>
-          <select value={settings.language} onChange={(event) => updateSettings({ language: event.target.value as Language })}>
-            <option value="en">English</option>
-            <option value="fr">Francais</option>
-          </select>
         </label>
       </section>
 

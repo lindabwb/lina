@@ -225,6 +225,27 @@ h2 {
   display: none;
 }
 
+.languageControl {
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--muted);
+  display: inline-flex;
+  gap: 4px;
+  height: 40px;
+  padding: 0 8px;
+}
+
+.languageControl select {
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 900;
+  outline: none;
+}
+
 .iconButton,
 .primaryButton,
 .checkButton {
@@ -275,7 +296,7 @@ h2 {
 }
 
 .settingsGrid {
-  grid-template-columns: repeat(4, minmax(160px, 1fr));
+  grid-template-columns: repeat(3, minmax(160px, 1fr));
 }
 
 .settingsGrid label {
