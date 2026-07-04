@@ -577,6 +577,8 @@ td textarea:focus,
 .courseHoursHint {
   background: #eef4f5;
   border-radius: 6px;
+  color: #344054;
+  font-weight: 800;
   padding: 6px 8px;
 }
 
