@@ -609,13 +609,13 @@ function App() {
     return hasSelectedCourse || !selectedCourse ? unfinishedCourses : [selectedCourse, ...unfinishedCourses]
   }
 
-  const plannedCourseLabel = (courseId: string, currentItemHours = 0) => {
+  const plannedCourseLabel = (courseId: string, extraPlannedHours = 0) => {
     const course = courses.find((item) => item.id === courseId)
     if (!course) return 'Selectionne un cours'
     const total = plannedHours(course, settings)
-    const alreadyPlanned = Math.max(0, (plannedHoursByCourse.get(courseId) || 0) - currentItemHours)
-    const remaining = Math.max(0, round(total - alreadyPlanned, 1))
-    return `${remaining}h restantes / ${total}h total (${alreadyPlanned}h deja planifiees)`
+    const planned = (plannedHoursByCourse.get(courseId) || 0) + extraPlannedHours
+    const remaining = Math.max(0, round(total - planned, 1))
+    return `${remaining}h restantes / ${total}h total`
   }
 
   const updateCourse = (id: string, patch: Partial<Course>) => {
@@ -924,7 +924,7 @@ function App() {
                     <option key={course.id} value={course.id}>{course.subject}</option>
                   ))}
                 </select>
-                <p className="courseHoursHint">{plannedCourseLabel(planDraft.courseId)}</p>
+                <p className="courseHoursHint">{plannedCourseLabel(planDraft.courseId, Number(planDraft.hours) || 0)}</p>
                 <input placeholder="Note" value={planDraft.note} onChange={(event) => setPlanDraft((current) => ({ ...current, note: event.target.value }))} />
                 <button className="primaryButton fullWidth" type="button" disabled={!planDraft.courseId} onClick={validatePlanItem}>
                   <Check size={17} /> Valider
@@ -964,7 +964,7 @@ function App() {
                                 <option key={course.id} value={course.id}>{course.subject}</option>
                               ))}
                             </select>
-                            <p className="courseHoursHint">{plannedCourseLabel(item.courseId, item.hours)}</p>
+                            <p className="courseHoursHint">{plannedCourseLabel(item.courseId)}</p>
                             <input placeholder="Note" value={item.note} onChange={(event) => updatePlanItem(item.id, { note: event.target.value })} />
                             {item.note.trim() && <p>{item.note}</p>}
                           </div>
