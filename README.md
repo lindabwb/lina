@@ -45,7 +45,7 @@ git push -u origin main
 3. Build command:
 
 ```bash
-npm install && npm run build
+npm ci --include=dev && npm run build
 ```
 
 4. Start command:
