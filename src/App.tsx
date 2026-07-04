@@ -24,6 +24,7 @@ type Language = 'en' | 'fr'
 type Course = {
   id: string
   subject: string
+  customSubject?: boolean
   pdfUrl: string
   pages: number
   pass1Hours: number | null
@@ -411,6 +412,7 @@ function courseNumberFromSubject(subject: string) {
 }
 
 function localizedCourseSubject(course: Course, language: Language) {
+  if (course.customSubject) return course.subject
   const number = courseNumberFromSubject(course.subject)
   const translation = number ? courseTranslations[number] : null
   if (!translation) return course.subject
@@ -734,7 +736,7 @@ function App() {
   const editCourseName = (course: Course) => {
     const value = window.prompt('Nom du cours', course.subject)
     if (value === null) return
-    updateCourse(course.id, { subject: value.trim() || course.subject })
+    updateCourse(course.id, { subject: value.trim() || course.subject, customSubject: true })
   }
 
   const startPlanItem = () => {
@@ -826,6 +828,7 @@ function App() {
         return {
           id: `import-${Date.now()}-${index}`,
           subject: subjectWithNumber(String(row.Subject || row.subject || row.Cours || '')),
+          customSubject: true,
           pdfUrl: normalizeUrl(String(row['PDF URL'] || row.pdfUrl || row.PDF || '')),
           pages: parseNumber(row['Page Count'] || row.pages || row.Pages) || 0,
           pass1Hours: parseNumber(row.Pass1 || row.pass1),
