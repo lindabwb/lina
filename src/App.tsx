@@ -21,6 +21,7 @@ import * as XLSX from 'xlsx'
 
 type Difficulty = 'easy' | 'medium' | 'hard' | 'very-hard'
 type Language = 'en' | 'fr'
+type SortMode = 'default' | 'name' | 'pages-desc' | 'goal-desc' | 'pass1-desc' | 'delta-desc' | 'review-asc'
 type Course = {
   id: string
   subject: string
@@ -551,6 +552,7 @@ function App() {
   const [courses, setCourses] = useState<Course[]>([])
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<'all' | 'todo' | 'done' | 'review' | 'over'>('all')
+  const [sortMode, setSortMode] = useState<SortMode>('default')
   const [isPlanningOpen, setIsPlanningOpen] = useState(false)
   const [isAddingPlanItem, setIsAddingPlanItem] = useState(false)
   const [planDraft, setPlanDraft] = useState<Omit<PlanItem, 'id'>>({
@@ -661,7 +663,7 @@ function App() {
 
   const filteredCourses = useMemo(() => {
     const needle = query.trim().toLowerCase()
-    return courses.filter((course) => {
+    const filtered = courses.filter((course) => {
       const goal = plannedHours(course, settings)
       const matchesSearch = !needle || `${course.subject} ${localizedCourseSubject(course, settings.language)} ${course.remarks}`.toLowerCase().includes(needle)
       const needsReview =
@@ -675,7 +677,16 @@ function App() {
         (filter === 'over' && course.pass1Hours !== null && course.pass1Hours - goal > 1)
       return matchesSearch && matchesFilter
     })
-  }, [courses, filter, query, settings])
+    return [...filtered].sort((a, b) => {
+      if (sortMode === 'name') return localizedCourseSubject(a, settings.language).localeCompare(localizedCourseSubject(b, settings.language))
+      if (sortMode === 'pages-desc') return b.pages - a.pages
+      if (sortMode === 'goal-desc') return plannedHours(b, settings) - plannedHours(a, settings)
+      if (sortMode === 'pass1-desc') return (b.pass1Hours ?? -1) - (a.pass1Hours ?? -1)
+      if (sortMode === 'delta-desc') return ((b.pass1Hours ?? plannedHours(b, settings)) - plannedHours(b, settings)) - ((a.pass1Hours ?? plannedHours(a, settings)) - plannedHours(a, settings))
+      if (sortMode === 'review-asc') return (a.lastReview || '9999-99-99').localeCompare(b.lastReview || '9999-99-99')
+      return courses.indexOf(a) - courses.indexOf(b)
+    })
+  }, [courses, filter, query, settings, sortMode])
 
   const customSchedule = useMemo(() => (
     settings.customPlan
@@ -1136,6 +1147,15 @@ function App() {
               <option value="done">Pass1 fini</option>
               <option value="review">Review due</option>
               <option value="over">Depassement</option>
+            </select>
+            <select value={sortMode} onChange={(event) => setSortMode(event.target.value as SortMode)} title="Tri">
+              <option value="default">Tri: ordre</option>
+              <option value="name">Tri: nom</option>
+              <option value="pages-desc">Tri: pages</option>
+              <option value="goal-desc">Tri: goal</option>
+              <option value="pass1-desc">Tri: pass1</option>
+              <option value="delta-desc">Tri: ecart</option>
+              <option value="review-asc">Tri: review</option>
             </select>
             <button className="primaryButton" type="button" onClick={() => setIsPlanningOpen(true)}>
               <CalendarDays size={17} /> Planning
