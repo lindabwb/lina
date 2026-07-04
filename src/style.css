@@ -409,6 +409,33 @@ td textarea:focus,
   padding: 4px 9px;
 }
 
+.planModeSwitch {
+  background: #eef4f5;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 4px;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 12px;
+  padding: 4px;
+}
+
+.planModeSwitch button {
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 900;
+  height: 32px;
+}
+
+.planModeSwitch button.active {
+  background: var(--panel);
+  color: var(--teal);
+  box-shadow: 0 1px 4px rgba(24, 33, 47, .08);
+}
+
 .scheduleList {
   display: grid;
   gap: 10px;
@@ -443,6 +470,69 @@ td textarea:focus,
   font-size: 13px;
   line-height: 1.35;
   margin: 8px 0 0;
+}
+
+.customPlanner,
+.planItemList {
+  display: grid;
+  gap: 10px;
+}
+
+.customPlanSummary {
+  background: #f8fafb;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 3px;
+  padding: 10px 12px;
+}
+
+.customPlanSummary strong {
+  font-size: 14px;
+}
+
+.customPlanSummary span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.primaryButton.fullWidth {
+  width: 100%;
+}
+
+.planItem {
+  background: #f8fafb;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+}
+
+.planItemTop {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: minmax(0, 1fr) 74px 34px;
+}
+
+.planItem input,
+.planItem select {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  height: 34px;
+  min-width: 0;
+  padding: 0 8px;
+  width: 100%;
+}
+
+.planItem p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+  margin: 0;
 }
 
 .tableSection {
