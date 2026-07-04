@@ -787,7 +787,7 @@ function App() {
       <section className="metricsGrid" aria-label="Synthese">
         <Metric label="Progression" value={`${stats.progress}%`} hint={`${stats.done}/${courses.length} cours pass1 finis`} tone="blue" />
         <Metric
-          label="Surplus Pass1"
+          label="Ecart Pass1"
           value={`${stats.passDelta > 0 ? '+' : ''}${stats.passDelta}h`}
           hint={`${stats.passDone}h faites / ${stats.passPlannedDone}h prevues, moy ${stats.passAverageDelta > 0 ? '+' : ''}${stats.passAverageDelta}h`}
           tone={stats.done === 0 ? 'blue' : stats.passDelta > 0 ? 'red' : 'green'}
