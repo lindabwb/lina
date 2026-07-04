@@ -307,6 +307,13 @@ function normalizeSubjectName(subject: string) {
     .replace('Acute Kidney Injruy', 'Acute Kidney Injury')
 }
 
+function normalizeUrl(url: string) {
+  const trimmed = url.trim()
+  if (!trimmed) return ''
+  if (/^(https?:\/\/|mailto:|tel:)/i.test(trimmed)) return trimmed
+  return `https://${trimmed}`
+}
+
 function subjectWithNumber(subject: string) {
   const clean = normalizeSubjectName(subject)
   const number = courseNumbers[clean]
@@ -605,7 +612,7 @@ function App() {
   const editPdfUrl = (course: Course) => {
     const value = window.prompt('Lien PDF du cours', course.pdfUrl)
     if (value === null) return
-    updateCourse(course.id, { pdfUrl: value.trim() })
+    updateCourse(course.id, { pdfUrl: normalizeUrl(value) })
   }
 
   const startPlanItem = () => {
@@ -695,7 +702,7 @@ function App() {
         return {
           id: `import-${Date.now()}-${index}`,
           subject: subjectWithNumber(String(row.Subject || row.subject || row.Cours || '')),
-          pdfUrl: String(row['PDF URL'] || row.pdfUrl || row.PDF || ''),
+          pdfUrl: normalizeUrl(String(row['PDF URL'] || row.pdfUrl || row.PDF || '')),
           pages: parseNumber(row['Page Count'] || row.pages || row.Pages) || 0,
           pass1Hours: parseNumber(row.Pass1 || row.pass1),
           seriesHours: parseNumber(row.Serie || row.series),
