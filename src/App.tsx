@@ -586,6 +586,14 @@ function App() {
     }))
   }, [customSchedule])
 
+  const unfinishedCourses = useMemo(() => courses.filter((course) => course.pass1Hours === null), [courses])
+
+  const planCourseOptions = (selectedCourseId: string) => {
+    const hasSelectedCourse = unfinishedCourses.some((course) => course.id === selectedCourseId)
+    const selectedCourse = courses.find((course) => course.id === selectedCourseId)
+    return hasSelectedCourse || !selectedCourse ? unfinishedCourses : [selectedCourse, ...unfinishedCourses]
+  }
+
   const updateCourse = (id: string, patch: Partial<Course>) => {
     setCourses((current) => current.map((course) => (course.id === id ? { ...course, ...patch } : course)))
   }
@@ -603,7 +611,7 @@ function App() {
   const startPlanItem = () => {
     setPlanDraft({
       date: todayIso(),
-      courseId: courses[0]?.id || '',
+      courseId: unfinishedCourses[0]?.id || '',
       hours: 1,
       note: '',
       done: false,
@@ -888,7 +896,7 @@ function App() {
                 </div>
                 <select value={planDraft.courseId} onChange={(event) => setPlanDraft((current) => ({ ...current, courseId: event.target.value }))}>
                   <option value="">Choisir un cours</option>
-                  {courses.map((course) => (
+                  {planCourseOptions(planDraft.courseId).map((course) => (
                     <option key={course.id} value={course.id}>{course.subject}</option>
                   ))}
                 </select>
@@ -927,7 +935,7 @@ function App() {
                             </div>
                             <select value={item.courseId} onChange={(event) => updatePlanItem(item.id, { courseId: event.target.value })}>
                               <option value="">Choisir un cours</option>
-                              {courses.map((course) => (
+                              {planCourseOptions(item.courseId).map((course) => (
                                 <option key={course.id} value={course.id}>{course.subject}</option>
                               ))}
                             </select>
