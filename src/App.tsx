@@ -7,6 +7,7 @@ import {
   Gauge,
   Link,
   LogOut,
+  Languages,
   Plus,
   RotateCcw,
   Search,
@@ -18,6 +19,7 @@ import {
 import * as XLSX from 'xlsx'
 
 type Difficulty = 'easy' | 'medium' | 'hard' | 'very-hard'
+type Language = 'en' | 'fr'
 type Course = {
   id: string
   subject: string
@@ -45,6 +47,7 @@ type Settings = {
   pagesPerHour: number
   dailyHours: number
   reviewEveryDays: number
+  language: Language
   customPlan: PlanItem[]
 }
 
@@ -299,6 +302,85 @@ const courseNumbers: Record<string, string> = {
   'Chronic Diarrhea': '21',
 }
 
+const courseTranslations: Record<string, { fr: string; en: string }> = {
+  '1': { fr: 'Les Accidents Vasculaires Cerebraux', en: 'Brain stroke' },
+  '2': { fr: 'Adenopathies superficielles', en: 'Superficial Adenopathies' },
+  '3': { fr: 'Les Anemies', en: 'Anemia' },
+  '4': { fr: 'Appendicite Aigue', en: 'Acute Appendicitis' },
+  '5': { fr: 'Arret cardio-circulatoire', en: 'Cardiocirculatory Arrest' },
+  '6': { fr: 'Arthrite septique', en: 'Arthrite Septique' },
+  '7': { fr: "Asthme de l'adulte et de l'enfant", en: 'Asthma' },
+  '8': { fr: 'Bronchiolite du nourrisson', en: 'Bronchiolitis' },
+  '9': { fr: 'Broncho pneumopathie chronique obstructive', en: 'COPD' },
+  '10': { fr: 'Brulures Cutanees Recentes', en: '-' },
+  '11': { fr: 'Les cancers broncho-pulmonaires primitifs', en: 'Cancer broncho pulmonaire' },
+  '12': { fr: 'Cancer du cavum', en: 'Nasopharyngeal Cancer' },
+  '13': { fr: "Cancer du col de l'uterus", en: 'Cervical cancer' },
+  '14': { fr: 'Cancer du sein', en: 'Breast cancer' },
+  '15': { fr: 'Cancers colorectaux', en: 'Colorectal cancer' },
+  '16': { fr: 'Cephalees', en: 'Headaches' },
+  '17': { fr: 'Coma', en: 'Coma' },
+  '18': { fr: "Deshydratations aigues de l'enfant", en: 'Pediatric Acute Dehydration' },
+  '19': { fr: 'Contraception', en: 'Contraception' },
+  '20': { fr: 'Diabete sucre', en: 'Diabetes' },
+  '21': { fr: 'Diarrhees chroniques', en: 'Chronic Diarrhea' },
+  '22': { fr: 'Douleurs thoraciques aigues', en: 'Acute Chest Pain' },
+  '23': { fr: 'Les dyslipidemies', en: 'Dyslipidemia' },
+  '24': { fr: 'Dysphagies', en: 'Dysphagia' },
+  '25': { fr: "L'endocardite infectieuse", en: 'Endocardite infectieuse' },
+  '26': { fr: 'Epilepsies', en: 'Epilepsy' },
+  '27': { fr: 'Choc cardiogenique', en: 'Cardiogenic shock' },
+  '28': { fr: "L'etat de choc hemorragique", en: 'Hemorrhagic shock' },
+  '29': { fr: 'Les etats confusionnels', en: 'Delirium' },
+  '30': { fr: 'Les etats septiques graves', en: 'Severe Septic States' },
+  '31': { fr: 'Fractures ouvertes de la jambe', en: 'Open Leg fractures' },
+  '32': { fr: 'Grossesse extra-uterine', en: 'Ectopic Pregnancy' },
+  '33': { fr: 'Les hematuries', en: 'Hematuria' },
+  '34': { fr: 'Les hemorragies digestives', en: 'GI Bleeding' },
+  '35': { fr: 'Hepatites virales', en: 'Viral Hepatitis' },
+  '36': { fr: 'Hydatidoses hepatiques et pulmonaires', en: 'Hydatid cyst (Hepatic & Pulmonary)' },
+  '37': { fr: 'Hypercalcemies', en: 'Hypercalcemia' },
+  '38': { fr: 'Hypertension arterielle', en: 'Hypertension' },
+  '39': { fr: 'Les hyperthyroidies', en: 'hyperthyroidism' },
+  '40': { fr: "Les hypothyroidies de l'adulte et de l'enfant", en: 'hypothyroidism' },
+  '41': { fr: 'Les icteres', en: 'Jaundice' },
+  '42': { fr: 'Infection des voies aeriennes superieures', en: 'Upper Resp Infections' },
+  '43': { fr: 'Infections respiratoires basses communautaires', en: 'Lower Resp infections' },
+  '44': { fr: 'Infections sexuellement transmissibles', en: 'STIs' },
+  '45': { fr: 'Infections Urinaires', en: 'urinary infections' },
+  '46': { fr: 'Insuffisance renale aigue', en: 'Acute Kidney Injury' },
+  '47': { fr: "L'insuffisance surrenalienne aigue", en: 'Acute Adrenal Insufficiency' },
+  '48': { fr: 'Intoxications par le CO, les organophosphores et les psychotropes', en: 'Intox CO, OP, PT' },
+  '49': { fr: 'Ischemie aigue des membres', en: 'Acute Limb Ischemia' },
+  '50': { fr: 'Lithiase urinaire', en: 'Urinary Lithiasis' },
+  '51': { fr: 'Maladies veineuses thrombo-emboliques', en: 'Thrombo-Embolism' },
+  '52': { fr: 'Meningites bacteriennes et virales', en: 'Meningitis' },
+  '53': { fr: 'Diagnostic des metrorragies', en: 'Metrorrhagia' },
+  '54': { fr: 'Occlusions intestinales aigues', en: 'Acute Intestinal Occlusion' },
+  '55': { fr: 'Les oedemes', en: 'Edema' },
+  '56': { fr: 'OEil rouge', en: 'Red Eye' },
+  '57': { fr: 'Peritonites aigues', en: 'Acute Peritonitis' },
+  '58': { fr: 'Polyarthrite Rhumatoide', en: 'Rhumatoid Arthritis' },
+  '59': { fr: 'Polytraumatisme', en: 'Polytrauma' },
+  '60': { fr: 'Preeclampsie et eclampsie', en: 'Pre-eclampsia & eclampsia' },
+  '61': { fr: 'Prise en charge de la douleur aigue', en: 'Acute Pain Management' },
+  '62': { fr: 'Les Purpuras', en: 'Purpuras' },
+  '63': { fr: 'Schizophrenie', en: 'Schizophrenia' },
+  '64': { fr: 'Splenomegalies', en: 'Splenomegaly' },
+  '65': { fr: 'Syndromes coronariens aigus', en: 'Coronary Syndromes' },
+  '66': { fr: 'Transfusion sanguine', en: 'Transfusion' },
+  '67': { fr: 'Traumatismes craniens', en: 'Head trauma' },
+  '68': { fr: 'Troubles acido-basiques', en: 'Acid-Base Disorders' },
+  '69': { fr: 'Troubles anxieux', en: 'Anxiety disorders' },
+  '70': { fr: "Trouble de l'humeur", en: 'Mood disorders' },
+  '71-1': { fr: "Les troubles de l'hydratation", en: 'Fluid disorders' },
+  '71-2': { fr: 'Dyskaliemies', en: 'Dyskalemia' },
+  '72': { fr: 'Tuberculose pulmonaire commune', en: 'Pulmonary Tuberculosis' },
+  '73': { fr: 'Les Tumeurs de la prostate', en: 'Prostate tumors' },
+  '74': { fr: "L'ulcere gastrique et duodenal", en: 'Gastric Ulcer' },
+  '75': { fr: 'Vaccinations', en: 'Vaccination' },
+}
+
 function normalizeSubjectName(subject: string) {
   return subject
     .replace(/^\s*\d+(?:-\d+)?\s*-\s*/, '')
@@ -319,6 +401,19 @@ function subjectWithNumber(subject: string) {
   const clean = normalizeSubjectName(subject)
   const number = courseNumbers[clean]
   return number ? `${number} - ${clean}` : subject.trim()
+}
+
+function courseNumberFromSubject(subject: string) {
+  const explicit = subject.match(/^\s*(\d+(?:-\d+)?)\s*-/)?.[1]
+  if (explicit) return explicit
+  return courseNumbers[normalizeSubjectName(subject)] || ''
+}
+
+function localizedCourseSubject(course: Course, language: Language) {
+  const number = courseNumberFromSubject(course.subject)
+  const translation = number ? courseTranslations[number] : null
+  if (!translation) return course.subject
+  return `${number} - ${translation[language]}`
 }
 
 function courseWithNumber(course: Course): Course {
@@ -344,6 +439,7 @@ const defaultSettings: Settings = {
   pagesPerHour: 5.5,
   dailyHours: 7,
   reviewEveryDays: 14,
+  language: 'en',
   customPlan: [],
 }
 
@@ -553,7 +649,7 @@ function App() {
     const needle = query.trim().toLowerCase()
     return courses.filter((course) => {
       const goal = plannedHours(course, settings)
-      const matchesSearch = !needle || `${course.subject} ${course.remarks}`.toLowerCase().includes(needle)
+      const matchesSearch = !needle || `${course.subject} ${localizedCourseSubject(course, settings.language)} ${course.remarks}`.toLowerCase().includes(needle)
       const needsReview =
         course.lastReview !== '' &&
         daysBetween(course.lastReview, todayIso()) > settings.reviewEveryDays
@@ -692,7 +788,9 @@ function App() {
 
   const exportExcel = () => {
     const rows = courses.map((course) => ({
-      Subject: course.subject,
+      Subject: localizedCourseSubject(course, settings.language),
+      'Subject EN': localizedCourseSubject(course, 'en'),
+      'Subject FR': localizedCourseSubject(course, 'fr'),
       'PDF URL': course.pdfUrl,
       'Page Count': course.pages,
       'Pass1 goal': plannedHours(course, settings),
@@ -879,6 +977,13 @@ function App() {
           <span><SlidersHorizontal size={16} /> Heures par jour</span>
           <input type="number" min="0.5" step="0.5" value={settings.dailyHours} onChange={(event) => updateSettings({ dailyHours: Number(event.target.value) })} />
         </label>
+        <label>
+          <span><Languages size={16} /> Langue</span>
+          <select value={settings.language} onChange={(event) => updateSettings({ language: event.target.value as Language })}>
+            <option value="en">English</option>
+            <option value="fr">Francais</option>
+          </select>
+        </label>
       </section>
 
       <section className="metricsGrid" aria-label="Synthese">
@@ -929,7 +1034,7 @@ function App() {
                 <select value={planDraft.courseId} onChange={(event) => setPlanDraft((current) => ({ ...current, courseId: event.target.value }))}>
                   <option value="">Choisir un cours</option>
                   {planCourseOptions(planDraft.courseId).map((course) => (
-                    <option key={course.id} value={course.id}>{course.subject}</option>
+                    <option key={course.id} value={course.id}>{localizedCourseSubject(course, settings.language)}</option>
                   ))}
                 </select>
                 <p className="courseHoursHint">{plannedCourseLabel(planDraft.courseId, Number(planDraft.hours) || 0)}</p>
@@ -969,7 +1074,7 @@ function App() {
                             <select value={item.courseId} onChange={(event) => updatePlanItem(item.id, { courseId: event.target.value })}>
                               <option value="">Choisir un cours</option>
                               {planCourseOptions(item.courseId).map((course) => (
-                                <option key={course.id} value={course.id}>{course.subject}</option>
+                                <option key={course.id} value={course.id}>{localizedCourseSubject(course, settings.language)}</option>
                               ))}
                             </select>
                             <p className="courseHoursHint">{plannedCourseLabel(item.courseId)}</p>
@@ -1038,11 +1143,11 @@ function App() {
                         <div className="courseTitleRow">
                           {course.pdfUrl ? (
                             <a className="courseLink" href={course.pdfUrl} target="_blank" rel="noreferrer">
-                              {course.subject}
+                              {localizedCourseSubject(course, settings.language)}
                               <ExternalLink size={13} />
                             </a>
                           ) : (
-                            <span className="courseLink disabled">{course.subject}</span>
+                            <span className="courseLink disabled">{localizedCourseSubject(course, settings.language)}</span>
                           )}
                           <button
                             className={`linkEditButton ${course.pdfUrl ? 'active' : ''}`}

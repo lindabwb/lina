@@ -275,7 +275,7 @@ h2 {
 }
 
 .settingsGrid {
-  grid-template-columns: repeat(3, minmax(160px, 1fr));
+  grid-template-columns: repeat(4, minmax(160px, 1fr));
 }
 
 .settingsGrid label {
@@ -297,6 +297,7 @@ h2 {
 }
 
 .settingsGrid input,
+.settingsGrid select,
 .searchBox input,
 td input,
 td select,
@@ -309,13 +310,15 @@ td textarea,
   outline: none;
 }
 
-.settingsGrid input {
+.settingsGrid input,
+.settingsGrid select {
   height: 40px;
   padding: 0 10px;
   width: 100%;
 }
 
 .settingsGrid input:focus,
+.settingsGrid select:focus,
 .searchBox input:focus,
 td input:focus,
 td select:focus,
