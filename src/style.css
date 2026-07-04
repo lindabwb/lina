@@ -3,29 +3,24 @@
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
   color: #18212f;
-  background: #eef4f6;
+  background: #fff1f7;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   --ink: #18212f;
   --muted: #667085;
-  --line: #d7e2e6;
+  --line: #f4cfe0;
   --panel: #ffffff;
-  --field: #f7fafb;
-  --teal: #0f766e;
-  --teal-2: #14b8a6;
-  --blue: #2563eb;
+  --field: #fff7fb;
+  --teal: #c0266f;
+  --teal-2: #ec4899;
+  --blue: #be185d;
   --amber: #b45309;
   --green: #15803d;
   --red: #b91c1c;
-  --shadow: 0 18px 45px rgba(24, 33, 47, .08);
-  --shadow-soft: 0 8px 22px rgba(24, 33, 47, .06);
-  --ring: 0 0 0 3px rgba(15, 118, 110, .13);
-  --glass: rgba(255, 255, 255, .34);
-  --glass-strong: rgba(255, 255, 255, .48);
-  --glass-field: rgba(255, 255, 255, .22);
-  --glass-line: rgba(255, 255, 255, .38);
-  --glass-shadow: 0 20px 54px rgba(2, 6, 23, .18);
+  --shadow: 0 18px 45px rgba(157, 23, 77, .10);
+  --shadow-soft: 0 8px 22px rgba(157, 23, 77, .08);
+  --ring: 0 0 0 3px rgba(236, 72, 153, .16);
 }
 
 * {
@@ -35,33 +30,11 @@
 body {
   margin: 0;
   min-width: 320px;
-  background: #030712;
-}
-
-.ditherBackground {
-  inset: 0;
-  opacity: .92;
-  pointer-events: auto;
-  position: fixed;
-  z-index: 0;
-}
-
-.ditherBackground::after {
   background:
-    radial-gradient(circle at 50% 16%, transparent 0%, rgba(3, 7, 18, .10) 58%, rgba(3, 7, 18, .42) 100%),
-    linear-gradient(180deg, rgba(3, 7, 18, .04), rgba(3, 7, 18, .28));
-  content: "";
-  inset: 0;
-  pointer-events: none;
-  position: absolute;
-}
-
-.ditherFallback {
-  background:
-    radial-gradient(circle at 35% 0%, rgba(29, 155, 240, .34), transparent 40%),
-    linear-gradient(180deg, #030712 0%, #07111f 100%);
-  height: 100%;
-  width: 100%;
+    radial-gradient(circle at 16% -10%, rgba(244, 114, 182, .32), transparent 34%),
+    radial-gradient(circle at 86% 2%, rgba(251, 207, 232, .52), transparent 30%),
+    radial-gradient(circle at 50% 105%, rgba(190, 24, 93, .10), transparent 36%),
+    linear-gradient(180deg, #fff7fb 0%, #fff1f7 45%, #fdf2f8 100%);
 }
 
 button,
@@ -76,7 +49,7 @@ button {
 }
 
 ::selection {
-  background: rgba(20, 184, 166, .22);
+  background: rgba(244, 114, 182, .30);
 }
 
 button:disabled {
@@ -89,19 +62,15 @@ button:disabled {
   display: flex;
   min-height: 100vh;
   padding: 20px;
-  position: relative;
-  z-index: 1;
 }
 
 .authPanel {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, .42), rgba(255, 255, 255, .24)),
-    radial-gradient(circle at 15% 0%, rgba(20, 184, 166, .12), transparent 38%);
-  backdrop-filter: blur(10px) saturate(126%);
-  -webkit-backdrop-filter: blur(10px) saturate(126%);
-  border: 1px solid var(--glass-line);
+    linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(255, 255, 255, .90)),
+    radial-gradient(circle at 15% 0%, rgba(244, 114, 182, .20), transparent 38%);
+  border: 1px solid rgba(255, 255, 255, .78);
   border-radius: 8px;
-  box-shadow: var(--glass-shadow);
+  box-shadow: 0 24px 70px rgba(24, 33, 47, .12);
   display: grid;
   gap: 14px;
   margin: 0 auto;
@@ -143,8 +112,8 @@ button:disabled {
 }
 
 .authPanel input {
-  background: var(--glass-field);
-  border: 1px solid rgba(255, 255, 255, .70);
+  background: var(--field);
+  border: 1px solid var(--line);
   border-radius: 7px;
   height: 44px;
   outline: none;
@@ -163,9 +132,9 @@ button:disabled {
 }
 
 .authSubmit {
-  background: linear-gradient(135deg, var(--teal), #0e9187);
+  background: linear-gradient(135deg, #be185d, #ec4899);
   border: 1px solid var(--teal);
-  box-shadow: 0 10px 24px rgba(15, 118, 110, .18);
+  box-shadow: 0 10px 24px rgba(190, 24, 93, .20);
   color: white;
   font-weight: 900;
 }
@@ -185,20 +154,17 @@ button:disabled {
   width: min(1500px, 100%);
   margin: 0 auto;
   padding: 24px;
-  position: relative;
-  z-index: 1;
 }
 
 .topBar {
   align-items: center;
   background:
-    linear-gradient(120deg, rgba(255, 255, 255, .32), rgba(235, 248, 250, .16)),
-    radial-gradient(circle at 14% 0%, rgba(20, 184, 166, .16), transparent 34%);
-  border: 1px solid var(--glass-line);
+    linear-gradient(120deg, rgba(255, 255, 255, .94), rgba(255, 241, 247, .84)),
+    radial-gradient(circle at 14% 0%, rgba(244, 114, 182, .24), transparent 34%);
+  border: 1px solid rgba(244, 207, 224, .86);
   border-radius: 10px;
-  box-shadow: var(--glass-shadow);
-  backdrop-filter: blur(10px) saturate(128%);
-  -webkit-backdrop-filter: blur(10px) saturate(128%);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
   display: flex;
   gap: 20px;
   justify-content: space-between;
@@ -209,7 +175,7 @@ button:disabled {
 }
 
 .topBar::before {
-  background: linear-gradient(180deg, var(--teal-2), var(--blue));
+  background: linear-gradient(180deg, #f472b6, #be185d);
   content: "";
   height: calc(100% - 28px);
   left: 0;
@@ -274,10 +240,8 @@ h2 {
 }
 
 .userBadge {
-  background: linear-gradient(180deg, rgba(255, 255, 255, .36), rgba(255, 255, 255, .20));
-  border: 1px solid var(--glass-line);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: linear-gradient(180deg, #ffffff, #fff7fb);
+  border: 1px solid var(--line);
   border-radius: 8px;
   display: grid;
   min-height: 40px;
@@ -308,10 +272,8 @@ h2 {
 
 .languageControl {
   align-items: center;
-  background: linear-gradient(180deg, rgba(255, 255, 255, .36), rgba(255, 255, 255, .20));
-  border: 1px solid var(--glass-line);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: linear-gradient(180deg, #ffffff, #fff7fb);
+  border: 1px solid var(--line);
   border-radius: 7px;
   color: var(--muted);
   display: inline-flex;
@@ -346,9 +308,7 @@ h2 {
 }
 
 .iconButton {
-  background: linear-gradient(180deg, rgba(255, 255, 255, .40), rgba(255, 255, 255, .22));
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: linear-gradient(180deg, #ffffff, #fff7fb);
   color: var(--ink);
   width: 40px;
 }
@@ -373,7 +333,7 @@ h2 {
 }
 
 .primaryButton {
-  background: linear-gradient(135deg, var(--teal), #0e9187);
+  background: linear-gradient(135deg, #be185d, #ec4899);
   border-color: var(--teal);
   color: white;
   font-weight: 800;
@@ -393,10 +353,8 @@ h2 {
 }
 
 .settingsGrid label {
-  background: var(--glass);
-  backdrop-filter: blur(8px) saturate(124%);
-  -webkit-backdrop-filter: blur(8px) saturate(124%);
-  border: 1px solid var(--glass-line);
+  background: rgba(255, 255, 255, .86);
+  border: 1px solid rgba(244, 207, 224, .88);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(24, 33, 47, .04);
   padding: 12px;
@@ -407,7 +365,7 @@ h2 {
 }
 
 .settingsGrid label:hover {
-  border-color: #bfd2d8;
+  border-color: #f9a8d4;
   box-shadow: var(--shadow-soft);
   transform: translateY(-1px);
 }
@@ -430,13 +388,11 @@ td input,
 td select,
 td textarea,
 .tableToolbar select {
-  background: var(--glass-field);
-  border: 1px solid rgba(255, 255, 255, .62);
+  background: var(--field);
+  border: 1px solid var(--line);
   border-radius: 6px;
   color: var(--ink);
   outline: none;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
 }
 
 .settingsGrid input,
@@ -463,10 +419,8 @@ td textarea:focus,
 
 .metric {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, .34), rgba(235, 248, 250, .18));
-  backdrop-filter: blur(8px) saturate(126%);
-  -webkit-backdrop-filter: blur(8px) saturate(126%);
-  border: 1px solid var(--glass-line);
+    linear-gradient(180deg, rgba(255, 255, 255, .95), rgba(255, 247, 251, .92));
+  border: 1px solid rgba(244, 207, 224, .86);
   border-top: 4px solid var(--blue);
   border-radius: 8px;
   box-shadow: 0 10px 28px rgba(24, 33, 47, .045);
@@ -480,7 +434,7 @@ td textarea:focus,
 }
 
 .metric:hover {
-  border-color: #bfd2d8;
+  border-color: #f9a8d4;
   box-shadow: var(--shadow-soft);
   transform: translateY(-2px);
 }
@@ -519,10 +473,8 @@ td textarea:focus,
 }
 
 .tableSection {
-  background: rgba(255, 255, 255, .22);
-  backdrop-filter: blur(6px) saturate(118%);
-  -webkit-backdrop-filter: blur(6px) saturate(118%);
-  border: 1px solid var(--glass-line);
+  background: rgba(255, 255, 255, .90);
+  border: 1px solid rgba(244, 207, 224, .88);
   border-radius: 8px;
   box-shadow: var(--shadow);
   overflow: hidden;
@@ -532,10 +484,9 @@ td textarea:focus,
   align-items: flex-start;
   animation: fadeIn .14s ease-out;
   background:
-    radial-gradient(circle at 50% 0%, rgba(20, 184, 166, .12), transparent 34%),
-    rgba(15, 23, 42, .42);
+    radial-gradient(circle at 50% 0%, rgba(244, 114, 182, .18), transparent 34%),
+    rgba(88, 28, 58, .38);
   backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
   display: flex;
   inset: 0;
   justify-content: center;
@@ -548,10 +499,8 @@ td textarea:focus,
 .planningPanel {
   animation: panelIn .18s ease-out;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, .44), rgba(235, 248, 250, .28));
-  backdrop-filter: blur(10px) saturate(126%);
-  -webkit-backdrop-filter: blur(10px) saturate(126%);
-  border: 1px solid var(--glass-line);
+    linear-gradient(180deg, rgba(255, 255, 255, .97), rgba(255, 247, 251, .95));
+  border: 1px solid rgba(255, 255, 255, .88);
   border-radius: 8px;
   box-shadow: 0 24px 70px rgba(24, 33, 47, .22);
   max-height: calc(100vh - 56px);
@@ -568,9 +517,8 @@ td textarea:focus,
   position: sticky;
   top: 0;
   z-index: 2;
-  background: linear-gradient(180deg, rgba(255, 255, 255, .36), rgba(255, 255, 255, .20));
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .98), rgba(255, 255, 255, .88));
+  backdrop-filter: blur(10px);
   padding-bottom: 10px;
 }
 
@@ -581,8 +529,7 @@ td textarea:focus,
 }
 
 .panelHeader span {
-  background: rgba(230, 244, 241, .74);
-  border: 1px solid rgba(255, 255, 255, .62);
+  background: #fce7f3;
   border-radius: 999px;
   color: var(--teal);
   font-size: 12px;
@@ -596,8 +543,8 @@ td textarea:focus,
 }
 
 .scheduleDay {
-  background: linear-gradient(180deg, rgba(255, 255, 255, .30), rgba(248, 250, 251, .18));
-  border: 1px solid var(--glass-line);
+  background: linear-gradient(180deg, #ffffff, #fff7fb);
+  border: 1px solid var(--line);
   border-radius: 8px;
   padding: 12px;
 }
@@ -652,7 +599,7 @@ td textarea:focus,
 }
 
 .planDay {
-  border-left: 3px solid #cfe7e2;
+  border-left: 3px solid #f9c7dc;
   display: grid;
   gap: 8px;
   padding-left: 8px;
@@ -673,8 +620,7 @@ td textarea:focus,
 }
 
 .planDayHeader span {
-  background: rgba(230, 244, 241, .74);
-  border: 1px solid rgba(255, 255, 255, .62);
+  background: #fce7f3;
   border-radius: 999px;
   color: var(--teal);
   font-size: 12px;
@@ -689,10 +635,8 @@ td textarea:focus,
 
 .customPlanSummary {
   background:
-    linear-gradient(135deg, rgba(230, 244, 241, .34), rgba(255, 255, 255, .22));
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
-  border: 1px solid var(--glass-line);
+    linear-gradient(135deg, rgba(252, 231, 243, .92), rgba(255, 255, 255, .92));
+  border: 1px solid var(--line);
   border-radius: 8px;
   display: grid;
   gap: 3px;
@@ -714,10 +658,8 @@ td textarea:focus,
 }
 
 .planItem {
-  background: linear-gradient(180deg, rgba(255, 255, 255, .30), rgba(248, 250, 251, .18));
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
-  border: 1px solid var(--glass-line);
+  background: linear-gradient(180deg, #ffffff, #fff7fb);
+  border: 1px solid rgba(244, 207, 224, .92);
   border-radius: 8px;
   display: grid;
   gap: 8px;
@@ -729,14 +671,14 @@ td textarea:focus,
 }
 
 .planItem:hover {
-  border-color: #bfd2d8;
+  border-color: #f9a8d4;
   box-shadow: var(--shadow-soft);
   transform: translateY(-1px);
 }
 
 .planItem.done {
-  background: rgba(240, 253, 244, .36);
-  border-color: rgba(187, 247, 208, .78);
+  background: #f0fdf4;
+  border-color: #bbf7d0;
 }
 
 .planItemTop {
@@ -751,8 +693,8 @@ td textarea:focus,
 
 .planItem input,
 .planItem select {
-  background: var(--glass-field);
-  border: 1px solid rgba(255, 255, 255, .62);
+  background: var(--panel);
+  border: 1px solid var(--line);
   border-radius: 6px;
   color: var(--ink);
   height: 34px;
@@ -763,8 +705,8 @@ td textarea:focus,
 
 .planDoneToggle {
   align-items: center;
-  background: var(--glass-field);
-  border: 1px solid rgba(255, 255, 255, .62);
+  background: var(--panel);
+  border: 1px solid var(--line);
   border-radius: 6px;
   color: var(--muted);
   display: flex;
@@ -783,8 +725,7 @@ td textarea:focus,
 }
 
 .courseHoursHint {
-  background: rgba(238, 244, 245, .30);
-  border: 1px solid rgba(255, 255, 255, .54);
+  background: #fdf2f8;
   border-radius: 6px;
   color: #344054;
   font-weight: 800;
@@ -803,10 +744,8 @@ td textarea:focus,
 }
 
 .tableToolbar {
-  background: linear-gradient(180deg, rgba(255, 255, 255, .28), rgba(235, 248, 250, .16));
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
-  border-bottom: 1px solid rgba(255, 255, 255, .58);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .94), rgba(255, 247, 251, .92));
+  border-bottom: 1px solid var(--line);
   padding: 12px;
   position: sticky;
   top: 0;
@@ -850,16 +789,14 @@ table {
 
 th,
 td {
-  border-bottom: 1px solid rgba(255, 255, 255, .42);
+  border-bottom: 1px solid var(--line);
   padding: 9px 8px;
   text-align: left;
   vertical-align: middle;
 }
 
 th {
-  background: rgba(238, 244, 245, .34);
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
+  background: #fdf2f8;
   color: #475467;
   font-size: 11px;
   font-weight: 900;
@@ -876,19 +813,19 @@ tbody tr {
 }
 
 tr:hover td {
-  background: rgba(255, 255, 255, .18);
+  background: #fff7fb;
 }
 
 tbody tr:hover {
-  box-shadow: inset 4px 0 0 rgba(20, 184, 166, .45);
+  box-shadow: inset 4px 0 0 rgba(236, 72, 153, .48);
 }
 
 tr.completedRow td {
-  background: rgba(240, 253, 244, .30);
+  background: #f0fdf4;
 }
 
 tr.completedRow:hover td {
-  background: rgba(232, 249, 238, .40);
+  background: #e8f9ee;
 }
 
 td input,
@@ -903,7 +840,7 @@ td select:hover,
 td textarea:hover,
 .searchBox input:hover,
 .tableToolbar select:hover {
-  border-color: #bfd2d8;
+  border-color: #f9a8d4;
 }
 
 td textarea {
@@ -942,7 +879,7 @@ td textarea {
 }
 
 .courseLink:hover {
-  color: #0e9187;
+  color: #db2777;
   transform: translateX(2px);
   text-decoration: none;
 }
@@ -966,7 +903,7 @@ td textarea {
 
 .linkEditButton:hover,
 .linkEditButton.active {
-  background: rgba(230, 244, 241, .72);
+  background: #fce7f3;
   color: var(--teal);
 }
 
@@ -996,22 +933,22 @@ td textarea {
 }
 
 .statusPill.fast {
-  background: rgba(220, 252, 231, .78);
+  background: #dcfce7;
   color: var(--green);
 }
 
 .statusPill.watch {
-  background: rgba(254, 243, 199, .80);
+  background: #fef3c7;
   color: var(--amber);
 }
 
 .statusPill.late {
-  background: rgba(254, 226, 226, .80);
+  background: #fee2e2;
   color: var(--red);
 }
 
 .statusPill.pending {
-  background: rgba(233, 238, 242, .76);
+  background: #e9eef2;
   color: #52606d;
 }
 
@@ -1020,14 +957,14 @@ td textarea {
 }
 
 .checkButton {
-  background: rgba(243, 246, 247, .58);
+  background: #f3f6f7;
   color: #98a2b3;
   height: 32px;
   width: 32px;
 }
 
 .checkButton.active {
-  background: rgba(220, 252, 231, .78);
+  background: #dcfce7;
   border-color: #86efac;
   color: var(--green);
 }
