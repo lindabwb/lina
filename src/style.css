@@ -1,0 +1,681 @@
+:root {
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  color: #18212f;
+  background: #f4f7f8;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --ink: #18212f;
+  --muted: #667085;
+  --line: #d8e0e4;
+  --panel: #ffffff;
+  --field: #f8fafb;
+  --teal: #0f766e;
+  --blue: #2563eb;
+  --amber: #b45309;
+  --green: #15803d;
+  --red: #b91c1c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: .72;
+}
+
+.authShell {
+  align-items: center;
+  display: flex;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.authPanel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 24px 70px rgba(24, 33, 47, .12);
+  display: grid;
+  gap: 14px;
+  margin: 0 auto;
+  max-width: 460px;
+  padding: 28px;
+  width: 100%;
+}
+
+.authPanel h1 {
+  font-size: 38px;
+}
+
+.authHint,
+.authError {
+  font-size: 14px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.authHint {
+  color: var(--muted);
+}
+
+.authError {
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 7px;
+  color: var(--red);
+  font-weight: 700;
+  padding: 10px;
+}
+
+.authPanel label {
+  color: #344054;
+  display: grid;
+  font-size: 13px;
+  font-weight: 800;
+  gap: 7px;
+}
+
+.authPanel input {
+  background: var(--field);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  height: 44px;
+  outline: none;
+  padding: 0 12px;
+}
+
+.authPanel input:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, .12);
+}
+
+.authSubmit,
+.authSwitch {
+  border-radius: 7px;
+  height: 44px;
+}
+
+.authSubmit {
+  background: var(--teal);
+  border: 1px solid var(--teal);
+  color: white;
+  font-weight: 900;
+}
+
+.authSwitch {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--teal);
+  font-weight: 800;
+}
+
+.appShell {
+  width: min(1500px, 100%);
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.topBar {
+  align-items: flex-start;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.eyebrow {
+  color: var(--teal);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  letter-spacing: 0;
+  margin: 0;
+}
+
+h1 {
+  font-size: clamp(30px, 4vw, 54px);
+  line-height: 1;
+}
+
+h2 {
+  font-size: 18px;
+}
+
+.topActions,
+.tableToolbar {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
+.syncState {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+  margin: 10px 0 0;
+}
+
+.syncState.saved {
+  color: var(--green);
+}
+
+.syncState.saving {
+  color: var(--amber);
+}
+
+.syncState.error {
+  color: var(--red);
+}
+
+.userBadge {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  min-height: 40px;
+  min-width: 190px;
+  padding: 5px 10px;
+}
+
+.userBadge span,
+.userBadge small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.userBadge span {
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.userBadge small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.iconButton,
+.primaryButton,
+.checkButton {
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  display: inline-flex;
+  height: 40px;
+  justify-content: center;
+  transition:
+    border-color .15s ease,
+    background .15s ease,
+    transform .15s ease;
+}
+
+.iconButton {
+  background: var(--panel);
+  color: var(--ink);
+  width: 40px;
+}
+
+.iconButton:hover,
+.primaryButton:hover,
+.checkButton:hover {
+  border-color: #9fb1ba;
+  transform: translateY(-1px);
+}
+
+.iconButton.compact {
+  height: 34px;
+  width: 34px;
+}
+
+.primaryButton {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: white;
+  font-weight: 800;
+  gap: 7px;
+  padding: 0 14px;
+}
+
+.settingsGrid,
+.metricsGrid {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.settingsGrid {
+  grid-template-columns: repeat(4, minmax(160px, 1fr));
+}
+
+.settingsGrid label {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.settingsGrid span {
+  align-items: center;
+  color: var(--muted);
+  display: flex;
+  font-size: 12px;
+  font-weight: 800;
+  gap: 6px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.settingsGrid input,
+.searchBox input,
+td input,
+td select,
+td textarea,
+.tableToolbar select {
+  background: var(--field);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  outline: none;
+}
+
+.settingsGrid input {
+  height: 40px;
+  padding: 0 10px;
+  width: 100%;
+}
+
+.settingsGrid input:focus,
+.searchBox input:focus,
+td input:focus,
+td select:focus,
+td textarea:focus,
+.tableToolbar select:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, .12);
+}
+
+.metricsGrid {
+  grid-template-columns: repeat(4, minmax(160px, 1fr));
+}
+
+.metric {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  border-radius: 8px;
+  min-height: 116px;
+  padding: 16px;
+}
+
+.metric span {
+  color: var(--muted);
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.metric strong {
+  display: block;
+  font-size: 30px;
+  line-height: 1.1;
+  margin: 10px 0 6px;
+}
+
+.metric p {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0;
+}
+
+.metric.amber {
+  border-left-color: var(--amber);
+}
+
+.metric.green {
+  border-left-color: var(--green);
+}
+
+.metric.red {
+  border-left-color: var(--red);
+}
+
+.workArea {
+  align-items: start;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 330px minmax(0, 1fr);
+}
+
+.sidePanel,
+.tableSection {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.sidePanel {
+  max-height: calc(100vh - 24px);
+  overflow: auto;
+  padding: 16px;
+  position: sticky;
+  top: 12px;
+}
+
+.panelHeader {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.panelHeader span {
+  background: #e6f4f1;
+  border-radius: 999px;
+  color: var(--teal);
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 9px;
+}
+
+.scheduleList {
+  display: grid;
+  gap: 10px;
+}
+
+.scheduleDay {
+  background: #f8fafb;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.scheduleDay div {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.scheduleDay strong {
+  font-size: 14px;
+}
+
+.scheduleDay span {
+  color: var(--teal);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.scheduleDay p,
+.empty {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+  margin: 8px 0 0;
+}
+
+.tableSection {
+  min-width: 0;
+}
+
+.tableToolbar {
+  border-bottom: 1px solid var(--line);
+  padding: 12px;
+}
+
+.searchBox {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  min-width: 220px;
+}
+
+.searchBox svg {
+  color: var(--muted);
+}
+
+.searchBox input {
+  height: 40px;
+  padding: 0 11px;
+  width: 100%;
+}
+
+.tableToolbar select {
+  height: 40px;
+  padding: 0 10px;
+}
+
+.tableWrap {
+  overflow: auto;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+  min-width: 1180px;
+  width: 100%;
+}
+
+th,
+td {
+  border-bottom: 1px solid var(--line);
+  padding: 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+th {
+  background: #eef4f5;
+  color: #475467;
+  font-size: 11px;
+  font-weight: 900;
+  position: sticky;
+  text-transform: uppercase;
+  top: 0;
+  z-index: 1;
+}
+
+tr:hover td {
+  background: #fbfdfd;
+}
+
+td input,
+td select {
+  height: 34px;
+  padding: 0 8px;
+  width: 100%;
+}
+
+td textarea {
+  height: 34px;
+  min-width: 220px;
+  padding: 8px;
+  resize: vertical;
+  width: 100%;
+}
+
+.subjectCell {
+  min-width: 260px;
+}
+
+.courseTitleRow {
+  align-items: flex-start;
+  display: flex;
+  gap: 6px;
+  justify-content: space-between;
+}
+
+.courseLink {
+  align-items: center;
+  color: var(--teal);
+  display: inline-flex;
+  flex: 1;
+  font-weight: 900;
+  gap: 6px;
+  line-height: 1.25;
+  margin: 0 0 5px;
+  min-width: 0;
+  text-decoration: none;
+}
+
+.courseLink:hover {
+  text-decoration: underline;
+}
+
+.courseLink.disabled {
+  color: var(--muted);
+}
+
+.subjectEdit {
+  font-size: 12px;
+}
+
+.linkEditButton {
+  align-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #98a2b3;
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 26px;
+  justify-content: center;
+  width: 26px;
+}
+
+.linkEditButton:hover,
+.linkEditButton.active {
+  background: #e6f4f1;
+  color: var(--teal);
+}
+
+.remarksCell {
+  min-width: 260px;
+}
+
+.numberInput {
+  max-width: 76px;
+}
+
+.goalCell {
+  color: #344054;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.statusPill {
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 900;
+  justify-content: center;
+  min-width: 72px;
+  padding: 5px 8px;
+}
+
+.statusPill.fast {
+  background: #dcfce7;
+  color: var(--green);
+}
+
+.statusPill.watch {
+  background: #fef3c7;
+  color: var(--amber);
+}
+
+.statusPill.late {
+  background: #fee2e2;
+  color: var(--red);
+}
+
+.statusPill.pending {
+  background: #e9eef2;
+  color: #52606d;
+}
+
+.checkCell {
+  text-align: center;
+}
+
+.checkButton {
+  background: #f3f6f7;
+  color: #98a2b3;
+  height: 32px;
+  width: 32px;
+}
+
+.checkButton.active {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: var(--green);
+}
+
+@media (max-width: 1100px) {
+  .settingsGrid,
+  .metricsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .workArea {
+    grid-template-columns: 1fr;
+  }
+
+  .sidePanel {
+    max-height: none;
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .appShell {
+    padding: 14px;
+  }
+
+  .topBar,
+  .tableToolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .topActions {
+    justify-content: flex-end;
+  }
+
+  .settingsGrid,
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+}
