@@ -875,8 +875,8 @@ function App() {
         <Metric label="Fin prevue" value={stats.predictedFinish} hint={stats.isOnTrack ? 'tu es dans le rythme' : 'augmente le rythme ou decale la cible'} tone={stats.isOnTrack ? 'green' : 'red'} />
       </section>
 
-      <section className="workArea">
-        <aside className="sidePanel">
+      <section className="planningSection">
+        <div className="planningPanel">
           <div className="panelHeader">
             <h2>Planning</h2>
             <span>{stats.customPlanned}h</span>
@@ -958,9 +958,10 @@ function App() {
               {!customSchedule.length && <p className="empty">Ajoute tes seances avec les cours et les heures que tu veux.</p>}
             </div>
           </div>
-        </aside>
+        </div>
+      </section>
 
-        <section className="tableSection">
+      <section className="tableSection">
           <div className="tableToolbar">
             <div className="searchBox">
               <Search size={17} />
@@ -1068,7 +1069,6 @@ function App() {
               </tbody>
             </table>
           </div>
-        </section>
       </section>
     </main>
   )

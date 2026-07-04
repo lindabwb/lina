@@ -371,26 +371,19 @@ td textarea:focus,
   border-left-color: var(--red);
 }
 
-.workArea {
-  align-items: start;
-  display: grid;
-  gap: 14px;
-  grid-template-columns: 330px minmax(0, 1fr);
-}
-
-.sidePanel,
+.planningPanel,
 .tableSection {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 8px;
 }
 
-.sidePanel {
-  max-height: calc(100vh - 24px);
-  overflow: auto;
+.planningSection {
+  margin-bottom: 14px;
+}
+
+.planningPanel {
   padding: 16px;
-  position: sticky;
-  top: 12px;
 }
 
 .panelHeader {
@@ -446,10 +439,15 @@ td textarea:focus,
 }
 
 .customPlanner,
-.planItemList,
-.planWeekList {
+.planItemList {
   display: grid;
   gap: 10px;
+}
+
+.planWeekList {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
 }
 
 .planWeek {
@@ -799,15 +797,6 @@ td textarea {
   .settingsGrid,
   .metricsGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .workArea {
-    grid-template-columns: 1fr;
-  }
-
-  .sidePanel {
-    max-height: none;
-    position: static;
   }
 }
 
