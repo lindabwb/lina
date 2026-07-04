@@ -482,9 +482,12 @@ function App() {
 
   const stats = useMemo(() => {
     const totalPages = courses.reduce((sum, course) => sum + course.pages, 0)
-    const done = courses.filter((course) => course.pass1Hours !== null).length
+    const completedCourses = courses.filter((course) => course.pass1Hours !== null)
+    const done = completedCourses.length
     const passPlanned = courses.reduce((sum, course) => sum + plannedHours(course, settings), 0)
-    const passDone = courses.reduce((sum, course) => sum + (course.pass1Hours || 0), 0)
+    const passPlannedDone = completedCourses.reduce((sum, course) => sum + plannedHours(course, settings), 0)
+    const passDone = completedCourses.reduce((sum, course) => sum + (course.pass1Hours || 0), 0)
+    const passDelta = passDone - passPlannedDone
     const remaining = courses.reduce((sum, course) => sum + totalCourseHours(course, settings), 0)
     const daysToTarget = daysBetween(todayIso(), settings.targetDate)
     const dailyRequired = remaining / daysToTarget
@@ -494,7 +497,10 @@ function App() {
       totalPages,
       done,
       passPlanned: round(passPlanned, 1),
+      passPlannedDone: round(passPlannedDone, 1),
       passDone: round(passDone, 1),
+      passDelta: round(passDelta, 1),
+      passAverageDelta: done ? round(passDelta / done, 1) : 0,
       remaining: round(remaining, 1),
       progress: courses.length ? Math.round((done / courses.length) * 100) : 0,
       daysToTarget,
@@ -780,6 +786,12 @@ function App() {
 
       <section className="metricsGrid" aria-label="Synthese">
         <Metric label="Progression" value={`${stats.progress}%`} hint={`${stats.done}/${courses.length} cours pass1 finis`} tone="blue" />
+        <Metric
+          label="Surplus Pass1"
+          value={`${stats.passDelta > 0 ? '+' : ''}${stats.passDelta}h`}
+          hint={`${stats.passDone}h faites / ${stats.passPlannedDone}h prevues, moy ${stats.passAverageDelta > 0 ? '+' : ''}${stats.passAverageDelta}h`}
+          tone={stats.done === 0 ? 'blue' : stats.passDelta > 0 ? 'red' : 'green'}
+        />
         <Metric label="Restant estime" value={`${stats.remaining}h`} hint={`${stats.totalPages} pages au total`} tone="amber" />
         <Metric label="Rythme requis" value={`${stats.dailyRequired}h/j`} hint={`jusqu'au ${settings.targetDate}`} tone={stats.isOnTrack ? 'green' : 'red'} />
         <Metric label="Fin prevue" value={stats.predictedFinish} hint={stats.isOnTrack ? 'tu es dans le rythme' : 'augmente le rythme ou decale la cible'} tone={stats.isOnTrack ? 'green' : 'red'} />
