@@ -21,11 +21,11 @@
   --shadow: 0 18px 45px rgba(24, 33, 47, .08);
   --shadow-soft: 0 8px 22px rgba(24, 33, 47, .06);
   --ring: 0 0 0 3px rgba(15, 118, 110, .13);
-  --glass: rgba(255, 255, 255, .62);
-  --glass-strong: rgba(255, 255, 255, .76);
-  --glass-field: rgba(255, 255, 255, .52);
-  --glass-line: rgba(255, 255, 255, .54);
-  --glass-shadow: 0 22px 60px rgba(2, 6, 23, .22);
+  --glass: rgba(255, 255, 255, .34);
+  --glass-strong: rgba(255, 255, 255, .48);
+  --glass-field: rgba(255, 255, 255, .22);
+  --glass-line: rgba(255, 255, 255, .38);
+  --glass-shadow: 0 20px 54px rgba(2, 6, 23, .18);
 }
 
 * {
@@ -95,10 +95,10 @@ button:disabled {
 
 .authPanel {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, .66), rgba(255, 255, 255, .44)),
+    linear-gradient(180deg, rgba(255, 255, 255, .42), rgba(255, 255, 255, .24)),
     radial-gradient(circle at 15% 0%, rgba(20, 184, 166, .12), transparent 38%);
-  backdrop-filter: blur(22px) saturate(142%);
-  -webkit-backdrop-filter: blur(22px) saturate(142%);
+  backdrop-filter: blur(10px) saturate(126%);
+  -webkit-backdrop-filter: blur(10px) saturate(126%);
   border: 1px solid var(--glass-line);
   border-radius: 8px;
   box-shadow: var(--glass-shadow);
@@ -192,13 +192,13 @@ button:disabled {
 .topBar {
   align-items: center;
   background:
-    linear-gradient(120deg, rgba(255, 255, 255, .58), rgba(235, 248, 250, .34)),
+    linear-gradient(120deg, rgba(255, 255, 255, .32), rgba(235, 248, 250, .16)),
     radial-gradient(circle at 14% 0%, rgba(20, 184, 166, .16), transparent 34%);
   border: 1px solid var(--glass-line);
   border-radius: 10px;
   box-shadow: var(--glass-shadow);
-  backdrop-filter: blur(22px) saturate(145%);
-  -webkit-backdrop-filter: blur(22px) saturate(145%);
+  backdrop-filter: blur(10px) saturate(128%);
+  -webkit-backdrop-filter: blur(10px) saturate(128%);
   display: flex;
   gap: 20px;
   justify-content: space-between;
@@ -274,10 +274,10 @@ h2 {
 }
 
 .userBadge {
-  background: linear-gradient(180deg, rgba(255, 255, 255, .64), rgba(255, 255, 255, .38));
+  background: linear-gradient(180deg, rgba(255, 255, 255, .36), rgba(255, 255, 255, .20));
   border: 1px solid var(--glass-line);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-radius: 8px;
   display: grid;
   min-height: 40px;
@@ -308,10 +308,10 @@ h2 {
 
 .languageControl {
   align-items: center;
-  background: linear-gradient(180deg, rgba(255, 255, 255, .64), rgba(255, 255, 255, .38));
+  background: linear-gradient(180deg, rgba(255, 255, 255, .36), rgba(255, 255, 255, .20));
   border: 1px solid var(--glass-line);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-radius: 7px;
   color: var(--muted);
   display: inline-flex;
@@ -346,9 +346,9 @@ h2 {
 }
 
 .iconButton {
-  background: linear-gradient(180deg, rgba(255, 255, 255, .68), rgba(255, 255, 255, .42));
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .40), rgba(255, 255, 255, .22));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: var(--ink);
   width: 40px;
 }
@@ -394,8 +394,8 @@ h2 {
 
 .settingsGrid label {
   background: var(--glass);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(8px) saturate(124%);
+  -webkit-backdrop-filter: blur(8px) saturate(124%);
   border: 1px solid var(--glass-line);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(24, 33, 47, .04);
@@ -435,8 +435,8 @@ td textarea,
   border-radius: 6px;
   color: var(--ink);
   outline: none;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .settingsGrid input,
@@ -463,9 +463,9 @@ td textarea:focus,
 
 .metric {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, .56), rgba(235, 248, 250, .34));
-  backdrop-filter: blur(20px) saturate(145%);
-  -webkit-backdrop-filter: blur(20px) saturate(145%);
+    linear-gradient(180deg, rgba(255, 255, 255, .34), rgba(235, 248, 250, .18));
+  backdrop-filter: blur(8px) saturate(126%);
+  -webkit-backdrop-filter: blur(8px) saturate(126%);
   border: 1px solid var(--glass-line);
   border-top: 4px solid var(--blue);
   border-radius: 8px;
@@ -519,9 +519,9 @@ td textarea:focus,
 }
 
 .tableSection {
-  background: rgba(255, 255, 255, .40);
-  backdrop-filter: blur(22px) saturate(145%);
-  -webkit-backdrop-filter: blur(22px) saturate(145%);
+  background: rgba(255, 255, 255, .22);
+  backdrop-filter: blur(6px) saturate(118%);
+  -webkit-backdrop-filter: blur(6px) saturate(118%);
   border: 1px solid var(--glass-line);
   border-radius: 8px;
   box-shadow: var(--shadow);
@@ -548,9 +548,9 @@ td textarea:focus,
 .planningPanel {
   animation: panelIn .18s ease-out;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, .70), rgba(235, 248, 250, .48));
-  backdrop-filter: blur(26px) saturate(150%);
-  -webkit-backdrop-filter: blur(26px) saturate(150%);
+    linear-gradient(180deg, rgba(255, 255, 255, .44), rgba(235, 248, 250, .28));
+  backdrop-filter: blur(10px) saturate(126%);
+  -webkit-backdrop-filter: blur(10px) saturate(126%);
   border: 1px solid var(--glass-line);
   border-radius: 8px;
   box-shadow: 0 24px 70px rgba(24, 33, 47, .22);
@@ -568,9 +568,9 @@ td textarea:focus,
   position: sticky;
   top: 0;
   z-index: 2;
-  background: linear-gradient(180deg, rgba(255, 255, 255, .62), rgba(255, 255, 255, .34));
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .36), rgba(255, 255, 255, .20));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   padding-bottom: 10px;
 }
 
@@ -596,7 +596,7 @@ td textarea:focus,
 }
 
 .scheduleDay {
-  background: linear-gradient(180deg, rgba(255, 255, 255, .56), rgba(248, 250, 251, .38));
+  background: linear-gradient(180deg, rgba(255, 255, 255, .30), rgba(248, 250, 251, .18));
   border: 1px solid var(--glass-line);
   border-radius: 8px;
   padding: 12px;
@@ -689,9 +689,9 @@ td textarea:focus,
 
 .customPlanSummary {
   background:
-    linear-gradient(135deg, rgba(230, 244, 241, .68), rgba(255, 255, 255, .48));
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+    linear-gradient(135deg, rgba(230, 244, 241, .34), rgba(255, 255, 255, .22));
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
   border: 1px solid var(--glass-line);
   border-radius: 8px;
   display: grid;
@@ -714,9 +714,9 @@ td textarea:focus,
 }
 
 .planItem {
-  background: linear-gradient(180deg, rgba(255, 255, 255, .58), rgba(248, 250, 251, .38));
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .30), rgba(248, 250, 251, .18));
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
   border: 1px solid var(--glass-line);
   border-radius: 8px;
   display: grid;
@@ -735,7 +735,7 @@ td textarea:focus,
 }
 
 .planItem.done {
-  background: rgba(240, 253, 244, .66);
+  background: rgba(240, 253, 244, .36);
   border-color: rgba(187, 247, 208, .78);
 }
 
@@ -783,7 +783,7 @@ td textarea:focus,
 }
 
 .courseHoursHint {
-  background: rgba(238, 244, 245, .64);
+  background: rgba(238, 244, 245, .30);
   border: 1px solid rgba(255, 255, 255, .54);
   border-radius: 6px;
   color: #344054;
@@ -803,9 +803,9 @@ td textarea:focus,
 }
 
 .tableToolbar {
-  background: linear-gradient(180deg, rgba(255, 255, 255, .50), rgba(235, 248, 250, .30));
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .28), rgba(235, 248, 250, .16));
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
   border-bottom: 1px solid rgba(255, 255, 255, .58);
   padding: 12px;
   position: sticky;
@@ -857,9 +857,9 @@ td {
 }
 
 th {
-  background: rgba(238, 244, 245, .58);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background: rgba(238, 244, 245, .34);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
   color: #475467;
   font-size: 11px;
   font-weight: 900;
@@ -876,7 +876,7 @@ tbody tr {
 }
 
 tr:hover td {
-  background: rgba(255, 255, 255, .36);
+  background: rgba(255, 255, 255, .18);
 }
 
 tbody tr:hover {
@@ -884,11 +884,11 @@ tbody tr:hover {
 }
 
 tr.completedRow td {
-  background: rgba(240, 253, 244, .58);
+  background: rgba(240, 253, 244, .30);
 }
 
 tr.completedRow:hover td {
-  background: rgba(232, 249, 238, .70);
+  background: rgba(232, 249, 238, .40);
 }
 
 td input,
