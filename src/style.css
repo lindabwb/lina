@@ -409,33 +409,6 @@ td textarea:focus,
   padding: 4px 9px;
 }
 
-.planModeSwitch {
-  background: #eef4f5;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  display: grid;
-  gap: 4px;
-  grid-template-columns: 1fr 1fr;
-  margin-bottom: 12px;
-  padding: 4px;
-}
-
-.planModeSwitch button {
-  background: transparent;
-  border: 0;
-  border-radius: 6px;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 900;
-  height: 32px;
-}
-
-.planModeSwitch button.active {
-  background: var(--panel);
-  color: var(--teal);
-  box-shadow: 0 1px 4px rgba(24, 33, 47, .08);
-}
-
 .scheduleList {
   display: grid;
   gap: 10px;
@@ -510,9 +483,18 @@ td textarea:focus,
   padding: 10px;
 }
 
+.planItem.done {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
 .planItemTop {
   display: grid;
   gap: 6px;
+  grid-template-columns: 72px minmax(0, 1fr) 68px 34px;
+}
+
+.draftPlanItem .planItemTop {
   grid-template-columns: minmax(0, 1fr) 74px 34px;
 }
 
@@ -526,6 +508,33 @@ td textarea:focus,
   min-width: 0;
   padding: 0 8px;
   width: 100%;
+}
+
+.planDoneToggle {
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  display: flex;
+  font-size: 11px;
+  font-weight: 900;
+  gap: 5px;
+  height: 34px;
+  justify-content: center;
+  padding: 0 6px;
+}
+
+.planDoneToggle input {
+  height: 13px;
+  margin: 0;
+  width: 13px;
+}
+
+.courseHoursHint {
+  background: #eef4f5;
+  border-radius: 6px;
+  padding: 6px 8px;
 }
 
 .planItem p {

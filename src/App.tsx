@@ -37,6 +37,7 @@ type PlanItem = {
   courseId: string
   hours: number
   note: string
+  done: boolean
 }
 
 type Settings = {
@@ -45,7 +46,6 @@ type Settings = {
   dailyHours: number
   seriesHoursPerCourse: number
   reviewEveryDays: number
-  planMode: 'auto' | 'custom'
   customPlan: PlanItem[]
 }
 
@@ -339,7 +339,6 @@ const defaultSettings: Settings = {
   dailyHours: 7,
   seriesHoursPerCourse: 1,
   reviewEveryDays: 14,
-  planMode: 'auto',
   customPlan: [],
 }
 
@@ -428,6 +427,14 @@ function App() {
   const [courses, setCourses] = useState<Course[]>([])
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<'all' | 'todo' | 'done' | 'review' | 'over'>('all')
+  const [isAddingPlanItem, setIsAddingPlanItem] = useState(false)
+  const [planDraft, setPlanDraft] = useState<Omit<PlanItem, 'id'>>({
+    date: todayIso(),
+    courseId: '',
+    hours: 1,
+    note: '',
+    done: false,
+  })
   const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY) || '')
   const [user, setUser] = useState<User | null>(null)
   const [authMode, setAuthMode] = useState<AuthMode>('login')
@@ -502,6 +509,7 @@ function App() {
     const passDelta = passDone - passPlannedDone
     const remaining = courses.reduce((sum, course) => sum + totalCourseHours(course, settings), 0)
     const customPlanned = settings.customPlan.reduce((sum, item) => sum + item.hours, 0)
+    const customDone = settings.customPlan.reduce((sum, item) => sum + (item.done ? item.hours : 0), 0)
     const daysToTarget = daysBetween(todayIso(), settings.targetDate)
     const dailyRequired = remaining / daysToTarget
     const finishDays = Math.ceil(remaining / Math.max(settings.dailyHours, 0.1))
@@ -516,6 +524,7 @@ function App() {
       passAverageDelta: done ? round(passDelta / done, 1) : 0,
       remaining: round(remaining, 1),
       customPlanned: round(customPlanned, 1),
+      customDone: round(customDone, 1),
       customGap: round(customPlanned - remaining, 1),
       progress: courses.length ? Math.round((done / courses.length) * 100) : 0,
       daysToTarget,
@@ -543,40 +552,14 @@ function App() {
     })
   }, [courses, filter, query, settings])
 
-  const schedule = useMemo(() => {
-    const items = courses
-      .filter((course) => totalCourseHours(course, settings) > 0)
-      .sort((a, b) => {
-        const weight = { 'very-hard': 0, hard: 1, medium: 2, easy: 3 }
-        return weight[a.difficulty] - weight[b.difficulty] || b.pages - a.pages
-      })
-
-    const days: Array<{ date: string; hours: number; tasks: string[] }> = []
-    let dateIndex = 0
-    let capacity = settings.dailyHours
-    for (const course of items) {
-      let remaining = totalCourseHours(course, settings)
-      while (remaining > 0) {
-        if (!days[dateIndex]) days[dateIndex] = { date: addDays(todayIso(), dateIndex), hours: 0, tasks: [] }
-        const chunk = Math.min(remaining, capacity)
-        days[dateIndex].hours = round(days[dateIndex].hours + chunk, 1)
-        days[dateIndex].tasks.push(`${course.subject} (${round(chunk, 1)}h)`)
-        remaining = round(remaining - chunk, 1)
-        capacity = round(capacity - chunk, 1)
-        if (capacity <= 0.05) {
-          dateIndex += 1
-          capacity = settings.dailyHours
-        }
-      }
-    }
-    return days.slice(0, 10)
-  }, [courses, settings])
-
   const customSchedule = useMemo(() => (
-    [...settings.customPlan].sort((a, b) => a.date.localeCompare(b.date))
+    settings.customPlan
+      .map((item) => ({ ...item, done: Boolean(item.done) }))
+      .sort((a, b) => a.date.localeCompare(b.date))
   ), [settings.customPlan])
 
   const courseNameById = useMemo(() => new Map(courses.map((course) => [course.id, course.subject])), [courses])
+  const courseById = useMemo(() => new Map(courses.map((course) => [course.id, course])), [courses])
 
   const updateCourse = (id: string, patch: Partial<Course>) => {
     setCourses((current) => current.map((course) => (course.id === id ? { ...course, ...patch } : course)))
@@ -592,20 +575,38 @@ function App() {
     updateCourse(course.id, { pdfUrl: value.trim() })
   }
 
-  const addPlanItem = () => {
+  const selectedDraftCourse = planDraft.courseId ? courseById.get(planDraft.courseId) : null
+
+  const courseHoursLabel = (courseId: string) => {
+    const course = courseById.get(courseId)
+    if (!course) return 'Choisis un cours pour voir les heures.'
+    return `Besoin: ${totalCourseHours(course, settings)}h | Pass1 goal: ${plannedHours(course, settings)}h`
+  }
+
+  const startPlanItem = () => {
+    setPlanDraft({
+      date: todayIso(),
+      courseId: courses[0]?.id || '',
+      hours: 1,
+      note: '',
+      done: false,
+    })
+    setIsAddingPlanItem(true)
+  }
+
+  const validatePlanItem = () => {
+    if (!planDraft.courseId) return
     updateSettings({
-      planMode: 'custom',
       customPlan: [
         ...settings.customPlan,
         {
           id: `plan-${Date.now()}`,
-          date: todayIso(),
-          courseId: courses[0]?.id || '',
-          hours: 1,
-          note: '',
+          ...planDraft,
+          hours: Number(planDraft.hours) || 0,
         },
       ],
     })
+    setIsAddingPlanItem(false)
   }
 
   const updatePlanItem = (id: string, patch: Partial<PlanItem>) => {
@@ -850,59 +851,72 @@ function App() {
         <aside className="sidePanel">
           <div className="panelHeader">
             <h2>Planning</h2>
-            <span>{settings.planMode === 'auto' ? `${settings.dailyHours}h/j` : `${stats.customPlanned}h`}</span>
-          </div>
-          <div className="planModeSwitch">
-            <button className={settings.planMode === 'auto' ? 'active' : ''} type="button" onClick={() => updateSettings({ planMode: 'auto' })}>Auto</button>
-            <button className={settings.planMode === 'custom' ? 'active' : ''} type="button" onClick={() => updateSettings({ planMode: 'custom' })}>Manuel</button>
+            <span>{stats.customPlanned}h</span>
           </div>
 
-          {settings.planMode === 'auto' ? (
-            <div className="scheduleList">
-              {schedule.map((day) => (
-                <div className="scheduleDay" key={day.date}>
-                  <div>
-                    <strong>{day.date}</strong>
-                    <span>{day.hours}h</span>
+          <div className="customPlanner">
+            <div className="customPlanSummary">
+              <strong>{stats.customPlanned}h planifiees</strong>
+              <span>{stats.customDone}h cochees | {stats.customGap >= 0 ? '+' : ''}{stats.customGap}h vs restant</span>
+            </div>
+
+            {!isAddingPlanItem ? (
+              <button className="primaryButton fullWidth" type="button" onClick={startPlanItem}>
+                <Plus size={17} /> Ajouter
+              </button>
+            ) : (
+              <div className="planItem draftPlanItem">
+                <div className="planItemTop">
+                  <input type="date" value={planDraft.date} onChange={(event) => setPlanDraft((current) => ({ ...current, date: event.target.value }))} />
+                  <input type="number" min="0" step="0.25" value={planDraft.hours} onChange={(event) => setPlanDraft((current) => ({ ...current, hours: Number(event.target.value) }))} />
+                  <button className="iconButton compact" type="button" title="Annuler" onClick={() => setIsAddingPlanItem(false)}>
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+                <select value={planDraft.courseId} onChange={(event) => setPlanDraft((current) => ({ ...current, courseId: event.target.value }))}>
+                  <option value="">Choisir un cours</option>
+                  {courses.map((course) => (
+                    <option key={course.id} value={course.id}>{course.subject}</option>
+                  ))}
+                </select>
+                <p className="courseHoursHint">
+                  {selectedDraftCourse ? courseHoursLabel(selectedDraftCourse.id) : 'Choisis un cours pour voir les heures.'}
+                </p>
+                <input placeholder="Note, combinaison, objectif..." value={planDraft.note} onChange={(event) => setPlanDraft((current) => ({ ...current, note: event.target.value }))} />
+                <button className="primaryButton fullWidth" type="button" disabled={!planDraft.courseId} onClick={validatePlanItem}>
+                  <Check size={17} /> Valider
+                </button>
+              </div>
+            )}
+
+            <div className="planItemList">
+              {customSchedule.map((item) => (
+                <div className={`planItem ${item.done ? 'done' : ''}`} key={item.id}>
+                  <div className="planItemTop">
+                    <label className="planDoneToggle">
+                      <input type="checkbox" checked={item.done} onChange={(event) => updatePlanItem(item.id, { done: event.target.checked })} />
+                      <span>{item.done ? 'Fait' : 'A faire'}</span>
+                    </label>
+                    <input type="date" value={item.date} onChange={(event) => updatePlanItem(item.id, { date: event.target.value })} />
+                    <input type="number" min="0" step="0.25" value={item.hours} onChange={(event) => updatePlanItem(item.id, { hours: Number(event.target.value) })} />
+                    <button className="iconButton compact" type="button" title="Supprimer la seance" onClick={() => removePlanItem(item.id)}>
+                      <Trash2 size={15} />
+                    </button>
                   </div>
-                  <p>{day.tasks.slice(0, 3).join(' + ')}{day.tasks.length > 3 ? '...' : ''}</p>
+                  <select value={item.courseId} onChange={(event) => updatePlanItem(item.id, { courseId: event.target.value })}>
+                    <option value="">Choisir un cours</option>
+                    {courses.map((course) => (
+                      <option key={course.id} value={course.id}>{course.subject}</option>
+                    ))}
+                  </select>
+                  <p className="courseHoursHint">{courseHoursLabel(item.courseId)}</p>
+                  <input placeholder="Note, combinaison, objectif..." value={item.note} onChange={(event) => updatePlanItem(item.id, { note: event.target.value })} />
+                  <p>{item.courseId ? courseNameById.get(item.courseId) : 'Aucun cours selectionne'}</p>
                 </div>
               ))}
-              {!schedule.length && <p className="empty">Tout est marque comme fini.</p>}
+              {!customSchedule.length && <p className="empty">Ajoute tes seances avec les cours et les heures que tu veux.</p>}
             </div>
-          ) : (
-            <div className="customPlanner">
-              <div className="customPlanSummary">
-                <strong>{stats.customPlanned}h planifiees</strong>
-                <span>{stats.customGap >= 0 ? '+' : ''}{stats.customGap}h vs restant</span>
-              </div>
-              <button className="primaryButton fullWidth" type="button" onClick={addPlanItem}>
-                <Plus size={17} /> Seance
-              </button>
-              <div className="planItemList">
-                {customSchedule.map((item) => (
-                  <div className="planItem" key={item.id}>
-                    <div className="planItemTop">
-                      <input type="date" value={item.date} onChange={(event) => updatePlanItem(item.id, { date: event.target.value })} />
-                      <input type="number" min="0" step="0.25" value={item.hours} onChange={(event) => updatePlanItem(item.id, { hours: Number(event.target.value) })} />
-                      <button className="iconButton compact" type="button" title="Supprimer la seance" onClick={() => removePlanItem(item.id)}>
-                        <Trash2 size={15} />
-                      </button>
-                    </div>
-                    <select value={item.courseId} onChange={(event) => updatePlanItem(item.id, { courseId: event.target.value })}>
-                      <option value="">Choisir un cours</option>
-                      {courses.map((course) => (
-                        <option key={course.id} value={course.id}>{course.subject}</option>
-                      ))}
-                    </select>
-                    <input placeholder="Note, combinaison, objectif..." value={item.note} onChange={(event) => updatePlanItem(item.id, { note: event.target.value })} />
-                    <p>{item.courseId ? courseNameById.get(item.courseId) : 'Aucun cours selectionne'}</p>
-                  </div>
-                ))}
-                {!customSchedule.length && <p className="empty">Ajoute tes seances avec les cours et les heures que tu veux.</p>}
-              </div>
-            </div>
-          )}
+          </div>
         </aside>
 
         <section className="tableSection">
