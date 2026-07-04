@@ -25,6 +25,8 @@ type Course = {
   id: string
   subject: string
   customSubject?: boolean
+  customSubjectEn?: string
+  customSubjectFr?: string
   pdfUrl: string
   pages: number
   pass1Hours: number | null
@@ -412,6 +414,8 @@ function courseNumberFromSubject(subject: string) {
 }
 
 function localizedCourseSubject(course: Course, language: Language) {
+  if (language === 'en' && course.customSubjectEn) return course.customSubjectEn
+  if (language === 'fr' && course.customSubjectFr) return course.customSubjectFr
   if (course.customSubject) return course.subject
   const number = courseNumberFromSubject(course.subject)
   const translation = number ? courseTranslations[number] : null
@@ -421,7 +425,14 @@ function localizedCourseSubject(course: Course, language: Language) {
 
 function courseWithNumber(course: Course): Course {
   const subject = subjectWithNumber(course.subject)
-  return { ...course, subject, pdfUrl: course.pdfUrl || '' }
+  return {
+    ...course,
+    subject,
+    customSubjectEn: course.customSubjectEn || (course.customSubject ? course.subject : undefined),
+    customSubjectFr: course.customSubjectFr || (course.customSubject ? course.subject : undefined),
+    customSubject: false,
+    pdfUrl: course.pdfUrl || '',
+  }
 }
 
 const initialCourses: Course[] = courseRows.map(([subject, pages, pass1Hours, lastReview, remarks], index) => ({
@@ -734,9 +745,16 @@ function App() {
   }
 
   const editCourseName = (course: Course) => {
-    const value = window.prompt('Nom du cours', course.subject)
+    const value = window.prompt('Nom du cours', localizedCourseSubject(course, settings.language))
     if (value === null) return
-    updateCourse(course.id, { subject: value.trim() || course.subject, customSubject: true })
+    const nextName = value.trim()
+    if (!nextName) return
+    updateCourse(
+      course.id,
+      settings.language === 'en'
+        ? { customSubjectEn: nextName, customSubject: false }
+        : { customSubjectFr: nextName, customSubject: false },
+    )
   }
 
   const startPlanItem = () => {
@@ -825,10 +843,12 @@ function App() {
       .filter((row) => row.Subject || row.subject || row.Cours)
       .map((row, index): Course => {
         const lastReview = row['Last Review']
+        const importedSubject = subjectWithNumber(String(row.Subject || row.subject || row.Cours || ''))
         return {
           id: `import-${Date.now()}-${index}`,
-          subject: subjectWithNumber(String(row.Subject || row.subject || row.Cours || '')),
-          customSubject: true,
+          subject: importedSubject,
+          customSubjectEn: settings.language === 'en' ? importedSubject : undefined,
+          customSubjectFr: settings.language === 'fr' ? importedSubject : undefined,
           pdfUrl: normalizeUrl(String(row['PDF URL'] || row.pdfUrl || row.PDF || '')),
           pages: parseNumber(row['Page Count'] || row.pages || row.Pages) || 0,
           pass1Hours: parseNumber(row.Pass1 || row.pass1),
