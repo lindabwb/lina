@@ -4,7 +4,6 @@ import {
   Check,
   Download,
   ExternalLink,
-  FileSpreadsheet,
   Gauge,
   Link,
   LogOut,
@@ -44,7 +43,6 @@ type Settings = {
   targetDate: string
   pagesPerHour: number
   dailyHours: number
-  seriesHoursPerCourse: number
   reviewEveryDays: number
   customPlan: PlanItem[]
 }
@@ -337,7 +335,6 @@ const defaultSettings: Settings = {
   targetDate: '2026-09-15',
   pagesPerHour: 5.5,
   dailyHours: 7,
-  seriesHoursPerCourse: 1,
   reviewEveryDays: 14,
   customPlan: [],
 }
@@ -389,9 +386,7 @@ function plannedHours(course: Course, settings: Settings) {
 }
 
 function totalCourseHours(course: Course, settings: Settings) {
-  const passRemaining = course.pass1Hours === null ? plannedHours(course, settings) : 0
-  const seriesRemaining = course.seriesHours === null ? settings.seriesHoursPerCourse : 0
-  return round(passRemaining + seriesRemaining, 1)
+  return course.pass1Hours === null ? plannedHours(course, settings) : 0
 }
 
 function statusFor(course: Course, settings: Settings) {
@@ -613,7 +608,7 @@ function App() {
   const courseHoursLabel = (courseId: string) => {
     const course = courseById.get(courseId)
     if (!course) return 'Choisis un cours pour voir les heures.'
-    return `Besoin: ${totalCourseHours(course, settings)}h | Pass1 goal: ${plannedHours(course, settings)}h`
+    return `Besoin cours: ${totalCourseHours(course, settings)}h | Pass1 goal: ${plannedHours(course, settings)}h`
   }
 
   const startPlanItem = () => {
@@ -860,10 +855,6 @@ function App() {
         <label>
           <span><SlidersHorizontal size={16} /> Heures par jour</span>
           <input type="number" min="0.5" step="0.5" value={settings.dailyHours} onChange={(event) => updateSettings({ dailyHours: Number(event.target.value) })} />
-        </label>
-        <label>
-          <span><FileSpreadsheet size={16} /> Series par cours</span>
-          <input type="number" min="0" step="0.25" value={settings.seriesHoursPerCourse} onChange={(event) => updateSettings({ seriesHoursPerCourse: Number(event.target.value) })} />
         </label>
       </section>
 
