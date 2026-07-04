@@ -5,6 +5,7 @@ import {
   Download,
   ExternalLink,
   Gauge,
+  Pencil,
   Link,
   LogOut,
   Languages,
@@ -730,6 +731,12 @@ function App() {
     updateCourse(course.id, { pdfUrl: normalizeUrl(value) })
   }
 
+  const editCourseName = (course: Course) => {
+    const value = window.prompt('Nom du cours', course.subject)
+    if (value === null) return
+    updateCourse(course.id, { subject: value.trim() || course.subject })
+  }
+
   const startPlanItem = () => {
     setPlanDraft({
       date: todayIso(),
@@ -1156,6 +1163,14 @@ function App() {
                             onClick={() => editPdfUrl(course)}
                           >
                             <Link size={14} />
+                          </button>
+                          <button
+                            className="linkEditButton"
+                            type="button"
+                            title="Modifier le nom"
+                            onClick={() => editCourseName(course)}
+                          >
+                            <Pencil size={14} />
                           </button>
                         </div>
                       </td>
