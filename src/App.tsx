@@ -13,6 +13,7 @@ import {
   SlidersHorizontal,
   Trash2,
   Upload,
+  X,
 } from 'lucide-react'
 import * as XLSX from 'xlsx'
 
@@ -440,6 +441,7 @@ function App() {
   const [courses, setCourses] = useState<Course[]>([])
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<'all' | 'todo' | 'done' | 'review' | 'over'>('all')
+  const [isPlanningOpen, setIsPlanningOpen] = useState(false)
   const [isAddingPlanItem, setIsAddingPlanItem] = useState(false)
   const [planDraft, setPlanDraft] = useState<Omit<PlanItem, 'id'>>({
     date: todayIso(),
@@ -892,11 +894,17 @@ function App() {
         <Metric label="Fin prevue" value={stats.predictedFinish} hint={stats.isOnTrack ? 'tu es dans le rythme' : 'augmente le rythme ou decale la cible'} tone={stats.isOnTrack ? 'green' : 'red'} />
       </section>
 
-      <section className="planningSection">
-        <div className="planningPanel">
+      {isPlanningOpen && (
+        <div className="modalOverlay" role="dialog" aria-modal="true" aria-label="Planning">
+          <div className="planningPanel">
           <div className="panelHeader">
             <h2>Planning</h2>
-            <span>{stats.customPlanned}h</span>
+            <div className="panelActions">
+              <span>{stats.customPlanned}h</span>
+              <button className="iconButton compact" type="button" title="Fermer" onClick={() => setIsPlanningOpen(false)}>
+                <X size={15} />
+              </button>
+            </div>
           </div>
 
           <div className="customPlanner">
@@ -977,8 +985,9 @@ function App() {
               {!customSchedule.length && <p className="empty">Ajoute tes seances avec les cours et les heures que tu veux.</p>}
             </div>
           </div>
+          </div>
         </div>
-      </section>
+      )}
 
       <section className="tableSection">
           <div className="tableToolbar">
@@ -993,6 +1002,9 @@ function App() {
               <option value="review">Review due</option>
               <option value="over">Depassement</option>
             </select>
+            <button className="primaryButton" type="button" onClick={() => setIsPlanningOpen(true)}>
+              <CalendarDays size={17} /> Planning
+            </button>
             <button className="primaryButton" type="button" onClick={addCourse}>
               <Plus size={17} /> Cours
             </button>

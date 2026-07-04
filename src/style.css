@@ -371,19 +371,33 @@ td textarea:focus,
   border-left-color: var(--red);
 }
 
-.planningPanel,
 .tableSection {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 8px;
 }
 
-.planningSection {
-  margin-bottom: 14px;
+.modalOverlay {
+  align-items: flex-start;
+  background: rgba(15, 23, 42, .36);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  overflow: auto;
+  padding: 28px;
+  position: fixed;
+  z-index: 20;
 }
 
 .planningPanel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 24px 70px rgba(24, 33, 47, .22);
+  max-height: calc(100vh - 56px);
+  overflow: auto;
   padding: 16px;
+  width: min(1180px, 100%);
 }
 
 .panelHeader {
@@ -391,6 +405,12 @@ td textarea:focus,
   display: flex;
   justify-content: space-between;
   margin-bottom: 12px;
+}
+
+.panelActions {
+  align-items: center;
+  display: flex;
+  gap: 8px;
 }
 
 .panelHeader span {
