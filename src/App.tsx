@@ -31,10 +31,10 @@ type Course = {
   pdfUrl: string
   pages: number
   pass1Hours: number | null
+  pass1Modified?: string
   seriesHours: number | null
   flashcards: boolean
   lastReview: string
-  lastModified?: string
   difficulty: Difficulty
   remarks: string
 }
@@ -434,7 +434,7 @@ function courseWithNumber(course: Course): Course {
     customSubjectFr: course.customSubjectFr || (course.customSubject ? course.subject : undefined),
     customSubject: false,
     pdfUrl: course.pdfUrl || '',
-    lastModified: course.lastModified || '',
+    pass1Modified: course.pass1Modified || '',
   }
 }
 
@@ -444,10 +444,10 @@ const initialCourses: Course[] = courseRows.map(([subject, pages, pass1Hours, la
   pdfUrl: coursePdfUrls[index] || '',
   pages,
   pass1Hours,
+  pass1Modified: '',
   seriesHours: null,
   flashcards: false,
   lastReview,
-  lastModified: '',
   difficulty: 'medium',
   remarks,
 }))
@@ -536,7 +536,7 @@ const uiText = {
     sortPass1: 'Sort: pass1',
     sortGap: 'Sort: gap',
     sortReview: 'Sort: review',
-    sortModified: 'Sort: last modified',
+    sortModified: 'Sort: Pass1 modified',
     course: 'Course',
     courses: 'Courses',
     pages: 'Pages',
@@ -631,7 +631,7 @@ const uiText = {
     sortPass1: 'Tri: pass1',
     sortGap: 'Tri: ecart',
     sortReview: 'Tri: review',
-    sortModified: 'Tri: derniere modif',
+    sortModified: 'Tri: modif Pass1',
     course: 'Cours',
     courses: 'Cours',
     pages: 'Pages',
@@ -881,7 +881,7 @@ function App() {
       if (sortMode === 'pass1-desc') return (b.pass1Hours ?? -1) - (a.pass1Hours ?? -1)
       if (sortMode === 'delta-desc') return ((b.pass1Hours ?? plannedHours(b, settings)) - plannedHours(b, settings)) - ((a.pass1Hours ?? plannedHours(a, settings)) - plannedHours(a, settings))
       if (sortMode === 'review-asc') return (a.lastReview || '9999-99-99').localeCompare(b.lastReview || '9999-99-99')
-      if (sortMode === 'modified-desc') return (b.lastModified || '').localeCompare(a.lastModified || '')
+      if (sortMode === 'modified-desc') return (b.pass1Modified || '').localeCompare(a.pass1Modified || '')
       return courses.indexOf(a) - courses.indexOf(b)
     })
   }, [courses, filter, query, settings, sortMode])
@@ -940,7 +940,15 @@ function App() {
   }
 
   const updateCourse = (id: string, patch: Partial<Course>) => {
-    setCourses((current) => current.map((course) => (course.id === id ? { ...course, ...patch, lastModified: new Date().toISOString() } : course)))
+    setCourses((current) => current.map((course) => {
+      if (course.id !== id) return course
+      const pass1Changed = Object.prototype.hasOwnProperty.call(patch, 'pass1Hours') && patch.pass1Hours !== course.pass1Hours
+      return {
+        ...course,
+        ...patch,
+        ...(pass1Changed ? { pass1Modified: new Date().toISOString() } : {}),
+      }
+    }))
   }
 
   const updateSettings = (patch: Partial<Settings>) => {
@@ -1013,10 +1021,10 @@ function App() {
         pdfUrl: '',
         pages: 0,
         pass1Hours: null,
+        pass1Modified: '',
         seriesHours: null,
         flashcards: false,
         lastReview: '',
-        lastModified: new Date().toISOString(),
         difficulty: 'medium',
         remarks: '',
       },
@@ -1034,7 +1042,7 @@ function App() {
       Pass1: course.pass1Hours ?? '',
       'Delta hours': course.pass1Hours === null ? '' : round(course.pass1Hours - plannedHours(course, settings), 1),
       'Last Review': course.lastReview,
-      'Last Modified': course.lastModified || '',
+      'Pass1 Last Modified': course.pass1Modified || '',
       Serie: course.seriesHours ?? '',
       Flashcards: course.flashcards ? 'yes' : '',
       difficulty: course.difficulty,
@@ -1063,13 +1071,13 @@ function App() {
           pdfUrl: normalizeUrl(String(row['PDF URL'] || row.pdfUrl || row.PDF || '')),
           pages: parseNumber(row['Page Count'] || row.pages || row.Pages) || 0,
           pass1Hours: parseNumber(row.Pass1 || row.pass1),
+          pass1Modified: String(row['Pass1 Last Modified'] || row.pass1Modified || ''),
           seriesHours: parseNumber(row.Serie || row.series),
           flashcards: Boolean(row.Flashcards || row.flashcards),
           lastReview:
             lastReview instanceof Date
               ? lastReview.toISOString().slice(0, 10)
               : String(lastReview || ''),
-          lastModified: new Date().toISOString(),
           difficulty: normalizeDifficulty(row.difficulty || row.Difficulty),
           remarks: String(row.remarks || row.Remarks || ''),
         }
