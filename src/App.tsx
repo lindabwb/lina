@@ -21,7 +21,7 @@ import * as XLSX from 'xlsx'
 
 type Difficulty = 'easy' | 'medium' | 'hard' | 'very-hard'
 type Language = 'en' | 'fr'
-type SortMode = 'default' | 'name' | 'pages-desc' | 'goal-desc' | 'pass1-desc' | 'delta-desc' | 'review-asc'
+type SortMode = 'default' | 'name' | 'pages-desc' | 'goal-desc' | 'pass1-desc' | 'delta-desc' | 'review-asc' | 'modified-desc'
 type Course = {
   id: string
   subject: string
@@ -34,6 +34,7 @@ type Course = {
   seriesHours: number | null
   flashcards: boolean
   lastReview: string
+  lastModified?: string
   difficulty: Difficulty
   remarks: string
 }
@@ -433,6 +434,7 @@ function courseWithNumber(course: Course): Course {
     customSubjectFr: course.customSubjectFr || (course.customSubject ? course.subject : undefined),
     customSubject: false,
     pdfUrl: course.pdfUrl || '',
+    lastModified: course.lastModified || '',
   }
 }
 
@@ -445,6 +447,7 @@ const initialCourses: Course[] = courseRows.map(([subject, pages, pass1Hours, la
   seriesHours: null,
   flashcards: false,
   lastReview,
+  lastModified: '',
   difficulty: 'medium',
   remarks,
 }))
@@ -457,6 +460,199 @@ const defaultSettings: Settings = {
   language: 'en',
   customPlan: [],
 }
+
+const uiText = {
+  en: {
+    appName: 'ECN revision cockpit',
+    loading: 'Loading...',
+    login: 'Login',
+    createAccount: 'Create account',
+    authHint: 'Each user keeps their planning, hours, reviews and remarks in the database.',
+    name: 'Name',
+    email: 'Email',
+    password: 'Password',
+    wait: 'Please wait...',
+    signIn: 'Sign in',
+    signUp: 'Sign up',
+    newAccount: 'Create a new account',
+    alreadyAccount: 'I already have an account',
+    loginFailed: 'Unable to sign in.',
+    invalidSession: 'Invalid session.',
+    hero: 'Plan, track, adjust.',
+    saving: 'Saving...',
+    saved: 'Saved to DB',
+    saveError: 'Save error',
+    connected: 'Connected',
+    importExcel: 'Import Excel',
+    exportExcel: 'Export Excel',
+    language: 'Language',
+    reset: 'Reset',
+    logout: 'Logout',
+    settings: 'Settings',
+    targetDate: 'Target date',
+    pagesPerHour: 'Pages per hour',
+    hoursPerDay: 'Hours per day',
+    summary: 'Summary',
+    progress: 'Progress',
+    pass1Gap: 'Pass1 gap',
+    remainingEstimate: 'Estimated remaining',
+    requiredPace: 'Required pace',
+    predictedFinish: 'Predicted finish',
+    coursesDone: 'pass1 courses done',
+    doneWord: 'done',
+    plannedWord: 'planned',
+    averageAbbrev: 'avg',
+    totalPages: 'pages total',
+    until: 'until',
+    onTrack: 'you are on pace',
+    adjustPace: 'increase pace or move target',
+    planning: 'Planning',
+    close: 'Close',
+    plannedHours: 'planned hours',
+    checkedHours: 'checked hours',
+    vsRemaining: 'vs remaining',
+    add: 'Add',
+    cancel: 'Cancel',
+    chooseCourse: 'Choose a course',
+    selectCourse: 'Select a course',
+    remainingHours: 'remaining',
+    totalHours: 'total',
+    note: 'Note',
+    validate: 'Validate',
+    week: 'Week',
+    done: 'Done',
+    todo: 'To do',
+    deleteSession: 'Delete session',
+    emptyPlan: 'Add sessions with the courses and hours you want.',
+    search: 'Search a course or remark',
+    all: 'All',
+    reviewDue: 'Review due',
+    overrun: 'Overrun',
+    sort: 'Sort',
+    sortOrder: 'Sort: order',
+    sortName: 'Sort: name',
+    sortPages: 'Sort: pages',
+    sortGoal: 'Sort: goal',
+    sortPass1: 'Sort: pass1',
+    sortGap: 'Sort: gap',
+    sortReview: 'Sort: review',
+    sortModified: 'Sort: last modified',
+    course: 'Course',
+    courses: 'Courses',
+    pages: 'Pages',
+    goal: 'Goal',
+    status: 'Status',
+    review: 'Review',
+    series: 'Series',
+    difficulty: 'Difficulty',
+    remarks: 'Remarks',
+    pending: 'pending',
+    flashcards: 'Flashcards',
+    editPdf: 'Edit PDF link',
+    addPdf: 'Add PDF link',
+    editName: 'Edit name',
+    delete: 'Delete',
+    pdfPrompt: 'Course PDF link',
+    namePrompt: 'Course name',
+    newCourse: 'New course',
+    difficulties: { easy: 'easy', medium: 'medium', hard: 'hard', 'very-hard': 'very hard' },
+  },
+  fr: {
+    appName: 'Cockpit revisions ECN',
+    loading: 'Chargement...',
+    login: 'Connexion',
+    createAccount: 'Creer un compte',
+    authHint: 'Chaque utilisateur garde son planning, ses heures, ses reviews et ses remarques dans la base de donnees.',
+    name: 'Nom',
+    email: 'Email',
+    password: 'Mot de passe',
+    wait: 'Patiente...',
+    signIn: 'Se connecter',
+    signUp: "S'inscrire",
+    newAccount: 'Creer un nouveau compte',
+    alreadyAccount: 'Jai deja un compte',
+    loginFailed: 'Connexion impossible.',
+    invalidSession: 'Session invalide.',
+    hero: 'Planifier, suivre, ajuster.',
+    saving: 'Sauvegarde...',
+    saved: 'Sauvegarde BDD OK',
+    saveError: 'Erreur sauvegarde',
+    connected: 'Connecte',
+    importExcel: 'Importer Excel',
+    exportExcel: 'Exporter Excel',
+    language: 'Langue',
+    reset: 'Reinitialiser',
+    logout: 'Deconnexion',
+    settings: 'Parametres',
+    targetDate: 'Date cible',
+    pagesPerHour: 'Pages par heure',
+    hoursPerDay: 'Heures par jour',
+    summary: 'Synthese',
+    progress: 'Progression',
+    pass1Gap: 'Ecart Pass1',
+    remainingEstimate: 'Restant estime',
+    requiredPace: 'Rythme requis',
+    predictedFinish: 'Fin prevue',
+    coursesDone: 'cours pass1 finis',
+    doneWord: 'faites',
+    plannedWord: 'prevues',
+    averageAbbrev: 'moy',
+    totalPages: 'pages au total',
+    until: "jusqu'au",
+    onTrack: 'tu es dans le rythme',
+    adjustPace: 'augmente le rythme ou decale la cible',
+    planning: 'Planning',
+    close: 'Fermer',
+    plannedHours: 'heures planifiees',
+    checkedHours: 'heures cochees',
+    vsRemaining: 'vs restant',
+    add: 'Ajouter',
+    cancel: 'Annuler',
+    chooseCourse: 'Choisir un cours',
+    selectCourse: 'Selectionne un cours',
+    remainingHours: 'restantes',
+    totalHours: 'total',
+    note: 'Note',
+    validate: 'Valider',
+    week: 'Semaine',
+    done: 'Fait',
+    todo: 'A faire',
+    deleteSession: 'Supprimer la seance',
+    emptyPlan: 'Ajoute tes seances avec les cours et les heures que tu veux.',
+    search: 'Chercher un cours ou une remarque',
+    all: 'Tous',
+    reviewDue: 'Review a faire',
+    overrun: 'Depassement',
+    sort: 'Tri',
+    sortOrder: 'Tri: ordre',
+    sortName: 'Tri: nom',
+    sortPages: 'Tri: pages',
+    sortGoal: 'Tri: objectif',
+    sortPass1: 'Tri: pass1',
+    sortGap: 'Tri: ecart',
+    sortReview: 'Tri: review',
+    sortModified: 'Tri: derniere modif',
+    course: 'Cours',
+    courses: 'Cours',
+    pages: 'Pages',
+    goal: 'Objectif',
+    status: 'Etat',
+    review: 'Revision',
+    series: 'Series',
+    difficulty: 'Difficulte',
+    remarks: 'Remarques',
+    pending: 'en attente',
+    flashcards: 'Flashcards',
+    editPdf: 'Modifier le lien PDF',
+    addPdf: 'Ajouter un lien PDF',
+    editName: 'Modifier le nom',
+    delete: 'Supprimer',
+    pdfPrompt: 'Lien PDF du cours',
+    namePrompt: 'Nom du cours',
+    newCourse: 'Nouveau cours',
+    difficulties: { easy: 'facile', medium: 'moyen', hard: 'difficile', 'very-hard': 'tres difficile' },
+  },
+} satisfies Record<Language, Record<string, unknown>>
 
 function defaultCoursesForUser(user: User | null) {
   return user?.email.toLowerCase() === LINA_EMAIL ? initialCourses : []
@@ -496,8 +692,8 @@ function weekStartIso(iso: string) {
   return date.toISOString().slice(0, 10)
 }
 
-function shortDateLabel(iso: string) {
-  return new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: '2-digit', month: '2-digit' }).format(new Date(`${iso}T00:00:00`))
+function shortDateLabel(iso: string, language: Language) {
+  return new Intl.DateTimeFormat(language === 'fr' ? 'fr-FR' : 'en-US', { weekday: 'short', day: '2-digit', month: '2-digit' }).format(new Date(`${iso}T00:00:00`))
 }
 
 function plannedHours(course: Course, settings: Settings) {
@@ -569,6 +765,7 @@ function App() {
   const [authError, setAuthError] = useState('')
   const [isAuthLoading, setIsAuthLoading] = useState(Boolean(token))
   const [saveState, setSaveState] = useState<SaveState>('idle')
+  const t = uiText[settings.language]
 
   useEffect(() => {
     if (!token) {
@@ -599,7 +796,7 @@ function App() {
         localStorage.removeItem(TOKEN_KEY)
         setToken('')
         setUser(null)
-        setAuthError(error instanceof Error ? error.message : 'Session invalide.')
+        setAuthError(error instanceof Error ? error.message : t.invalidSession)
       } finally {
         if (!cancelled) setIsAuthLoading(false)
       }
@@ -684,6 +881,7 @@ function App() {
       if (sortMode === 'pass1-desc') return (b.pass1Hours ?? -1) - (a.pass1Hours ?? -1)
       if (sortMode === 'delta-desc') return ((b.pass1Hours ?? plannedHours(b, settings)) - plannedHours(b, settings)) - ((a.pass1Hours ?? plannedHours(a, settings)) - plannedHours(a, settings))
       if (sortMode === 'review-asc') return (a.lastReview || '9999-99-99').localeCompare(b.lastReview || '9999-99-99')
+      if (sortMode === 'modified-desc') return (b.lastModified || '').localeCompare(a.lastModified || '')
       return courses.indexOf(a) - courses.indexOf(b)
     })
   }, [courses, filter, query, settings, sortMode])
@@ -734,15 +932,15 @@ function App() {
 
   const plannedCourseLabel = (courseId: string, extraPlannedHours = 0) => {
     const course = courses.find((item) => item.id === courseId)
-    if (!course) return 'Selectionne un cours'
+    if (!course) return t.selectCourse
     const total = plannedHours(course, settings)
     const planned = (plannedHoursByCourse.get(courseId) || 0) + extraPlannedHours
     const remaining = Math.max(0, round(total - planned, 1))
-    return `${remaining}h restantes / ${total}h total`
+    return `${remaining}h ${t.remainingHours} / ${total}h ${t.totalHours}`
   }
 
   const updateCourse = (id: string, patch: Partial<Course>) => {
-    setCourses((current) => current.map((course) => (course.id === id ? { ...course, ...patch } : course)))
+    setCourses((current) => current.map((course) => (course.id === id ? { ...course, ...patch, lastModified: new Date().toISOString() } : course)))
   }
 
   const updateSettings = (patch: Partial<Settings>) => {
@@ -750,13 +948,13 @@ function App() {
   }
 
   const editPdfUrl = (course: Course) => {
-    const value = window.prompt('Lien PDF du cours', course.pdfUrl)
+    const value = window.prompt(t.pdfPrompt, course.pdfUrl)
     if (value === null) return
     updateCourse(course.id, { pdfUrl: normalizeUrl(value) })
   }
 
   const editCourseName = (course: Course) => {
-    const value = window.prompt('Nom du cours', localizedCourseSubject(course, settings.language))
+    const value = window.prompt(t.namePrompt, localizedCourseSubject(course, settings.language))
     if (value === null) return
     const nextName = value.trim()
     if (!nextName) return
@@ -811,13 +1009,14 @@ function App() {
       ...current,
       {
         id: `course-${Date.now()}`,
-        subject: 'Nouveau cours',
+        subject: t.newCourse,
         pdfUrl: '',
         pages: 0,
         pass1Hours: null,
         seriesHours: null,
         flashcards: false,
         lastReview: '',
+        lastModified: new Date().toISOString(),
         difficulty: 'medium',
         remarks: '',
       },
@@ -835,6 +1034,7 @@ function App() {
       Pass1: course.pass1Hours ?? '',
       'Delta hours': course.pass1Hours === null ? '' : round(course.pass1Hours - plannedHours(course, settings), 1),
       'Last Review': course.lastReview,
+      'Last Modified': course.lastModified || '',
       Serie: course.seriesHours ?? '',
       Flashcards: course.flashcards ? 'yes' : '',
       difficulty: course.difficulty,
@@ -869,6 +1069,7 @@ function App() {
             lastReview instanceof Date
               ? lastReview.toISOString().slice(0, 10)
               : String(lastReview || ''),
+          lastModified: new Date().toISOString(),
           difficulty: normalizeDifficulty(row.difficulty || row.Difficulty),
           remarks: String(row.remarks || row.Remarks || ''),
         }
@@ -899,7 +1100,7 @@ function App() {
       setUser(result.user)
       didLoadProgress.current = false
     } catch (error) {
-      setAuthError(error instanceof Error ? error.message : 'Connexion impossible.')
+      setAuthError(error instanceof Error ? error.message : t.loginFailed)
     } finally {
       setIsAuthLoading(false)
     }
@@ -918,8 +1119,8 @@ function App() {
     return (
       <main className="authShell">
         <div className="authPanel">
-          <p className="eyebrow">ECN revision cockpit</p>
-          <h1>Chargement...</h1>
+          <p className="eyebrow">{t.appName}</p>
+          <h1>{t.loading}</h1>
         </div>
       </main>
     )
@@ -929,27 +1130,27 @@ function App() {
     return (
       <main className="authShell">
         <form className="authPanel" onSubmit={submitAuth}>
-          <p className="eyebrow">ECN revision cockpit</p>
-          <h1>{authMode === 'login' ? 'Connexion' : 'Creer un compte'}</h1>
-          <p className="authHint">Chaque utilisateur garde son planning, ses heures, ses reviews et ses remarques dans la base SQLite.</p>
+          <p className="eyebrow">{t.appName}</p>
+          <h1>{authMode === 'login' ? t.login : t.createAccount}</h1>
+          <p className="authHint">{t.authHint}</p>
 
           {authMode === 'register' && (
             <label>
-              Nom
+              {t.name}
               <input value={authForm.name} onChange={(event) => setAuthForm((current) => ({ ...current, name: event.target.value }))} />
             </label>
           )}
           <label>
-            Email
+            {t.email}
             <input type="email" value={authForm.email} onChange={(event) => setAuthForm((current) => ({ ...current, email: event.target.value }))} />
           </label>
           <label>
-            Mot de passe
+            {t.password}
             <input type="password" minLength={6} value={authForm.password} onChange={(event) => setAuthForm((current) => ({ ...current, password: event.target.value }))} />
           </label>
           {authError && <p className="authError">{authError}</p>}
           <button className="authSubmit" type="submit" disabled={isAuthLoading}>
-            {isAuthLoading ? 'Patiente...' : authMode === 'login' ? 'Se connecter' : "S'inscrire"}
+            {isAuthLoading ? t.wait : authMode === 'login' ? t.signIn : t.signUp}
           </button>
           <button
             className="authSwitch"
@@ -959,7 +1160,7 @@ function App() {
               setAuthError('')
             }}
           >
-            {authMode === 'login' ? 'Creer un nouveau compte' : 'Jai deja un compte'}
+            {authMode === 'login' ? t.newAccount : t.alreadyAccount}
           </button>
         </form>
       </main>
@@ -970,32 +1171,32 @@ function App() {
     <main className="appShell">
       <header className="topBar">
         <div>
-          <p className="eyebrow">ECN revision cockpit</p>
-          <h1>Planifier, suivre, ajuster.</h1>
-          <p className={`syncState ${saveState}`}>{saveState === 'saving' ? 'Sauvegarde...' : saveState === 'saved' ? 'Sauvegarde BDD OK' : saveState === 'error' ? 'Erreur sauvegarde' : 'Connecte'}</p>
+          <p className="eyebrow">{t.appName}</p>
+          <h1>{t.hero}</h1>
+          <p className={`syncState ${saveState}`}>{saveState === 'saving' ? t.saving : saveState === 'saved' ? t.saved : saveState === 'error' ? t.saveError : t.connected}</p>
         </div>
         <div className="topActions">
           <div className="userBadge">
             <span>{user.name}</span>
             <small>{user.email}</small>
           </div>
-          <button className="iconButton" type="button" title="Importer Excel" onClick={() => fileInputRef.current?.click()}>
+          <button className="iconButton" type="button" title={t.importExcel} onClick={() => fileInputRef.current?.click()}>
             <Upload size={18} />
           </button>
-          <button className="iconButton" type="button" title="Exporter Excel" onClick={exportExcel}>
+          <button className="iconButton" type="button" title={t.exportExcel} onClick={exportExcel}>
             <Download size={18} />
           </button>
-          <label className="languageControl" title="Langue">
+          <label className="languageControl" title={t.language}>
             <Languages size={16} />
             <select value={settings.language} onChange={(event) => updateSettings({ language: event.target.value as Language })}>
               <option value="en">EN</option>
               <option value="fr">FR</option>
             </select>
           </label>
-          <button className="iconButton" type="button" title="Reinitialiser" onClick={resetData}>
+          <button className="iconButton" type="button" title={t.reset} onClick={resetData}>
             <RotateCcw size={18} />
           </button>
-          <button className="iconButton" type="button" title="Deconnexion" onClick={logout}>
+          <button className="iconButton" type="button" title={t.logout} onClick={logout}>
             <LogOut size={18} />
           </button>
           <input
@@ -1012,42 +1213,42 @@ function App() {
         </div>
       </header>
 
-      <section className="settingsGrid" aria-label="Parametres">
+      <section className="settingsGrid" aria-label={t.settings}>
         <label>
-          <span><CalendarDays size={16} /> Date cible</span>
+          <span><CalendarDays size={16} /> {t.targetDate}</span>
           <input type="date" value={settings.targetDate} onChange={(event) => updateSettings({ targetDate: event.target.value })} />
         </label>
         <label>
-          <span><Gauge size={16} /> Pages par heure</span>
+          <span><Gauge size={16} /> {t.pagesPerHour}</span>
           <input type="number" min="0.5" step="0.1" value={settings.pagesPerHour} onChange={(event) => updateSettings({ pagesPerHour: Number(event.target.value) })} />
         </label>
         <label>
-          <span><SlidersHorizontal size={16} /> Heures par jour</span>
+          <span><SlidersHorizontal size={16} /> {t.hoursPerDay}</span>
           <input type="number" min="0.5" step="0.5" value={settings.dailyHours} onChange={(event) => updateSettings({ dailyHours: Number(event.target.value) })} />
         </label>
       </section>
 
-      <section className="metricsGrid" aria-label="Synthese">
-        <Metric label="Progression" value={`${stats.progress}%`} hint={`${stats.done}/${courses.length} cours pass1 finis`} tone="blue" />
+      <section className="metricsGrid" aria-label={t.summary}>
+        <Metric label={t.progress} value={`${stats.progress}%`} hint={`${stats.done}/${courses.length} ${t.coursesDone}`} tone="blue" />
         <Metric
-          label="Ecart Pass1"
+          label={t.pass1Gap}
           value={`${stats.passDelta > 0 ? '+' : ''}${stats.passDelta}h`}
-          hint={`${stats.passDone}h faites / ${stats.passPlannedDone}h prevues, moy ${stats.passAverageDelta > 0 ? '+' : ''}${stats.passAverageDelta}h`}
+          hint={`${stats.passDone}h ${t.doneWord} / ${stats.passPlannedDone}h ${t.plannedWord}, ${t.averageAbbrev} ${stats.passAverageDelta > 0 ? '+' : ''}${stats.passAverageDelta}h`}
           tone={stats.done === 0 ? 'blue' : stats.passDelta > 0 ? 'red' : 'green'}
         />
-        <Metric label="Restant estime" value={`${stats.remaining}h`} hint={`${stats.totalPages} pages au total`} tone="amber" />
-        <Metric label="Rythme requis" value={`${stats.dailyRequired}h/j`} hint={`jusqu'au ${settings.targetDate}`} tone={stats.isOnTrack ? 'green' : 'red'} />
-        <Metric label="Fin prevue" value={stats.predictedFinish} hint={stats.isOnTrack ? 'tu es dans le rythme' : 'augmente le rythme ou decale la cible'} tone={stats.isOnTrack ? 'green' : 'red'} />
+        <Metric label={t.remainingEstimate} value={`${stats.remaining}h`} hint={`${stats.totalPages} ${t.totalPages}`} tone="amber" />
+        <Metric label={t.requiredPace} value={`${stats.dailyRequired}h/j`} hint={`${t.until} ${settings.targetDate}`} tone={stats.isOnTrack ? 'green' : 'red'} />
+        <Metric label={t.predictedFinish} value={stats.predictedFinish} hint={stats.isOnTrack ? t.onTrack : t.adjustPace} tone={stats.isOnTrack ? 'green' : 'red'} />
       </section>
 
       {isPlanningOpen && (
-        <div className="modalOverlay" role="dialog" aria-modal="true" aria-label="Planning">
+        <div className="modalOverlay" role="dialog" aria-modal="true" aria-label={t.planning}>
           <div className="planningPanel">
           <div className="panelHeader">
-            <h2>Planning</h2>
+            <h2>{t.planning}</h2>
             <div className="panelActions">
               <span>{stats.customPlanned}h</span>
-              <button className="iconButton compact" type="button" title="Fermer" onClick={() => setIsPlanningOpen(false)}>
+              <button className="iconButton compact" type="button" title={t.close} onClick={() => setIsPlanningOpen(false)}>
                 <X size={15} />
               </button>
             </div>
@@ -1055,33 +1256,33 @@ function App() {
 
           <div className="customPlanner">
             <div className="customPlanSummary">
-              <strong>{stats.customPlanned}h planifiees</strong>
-              <span>{stats.customDone}h cochees | {stats.customGap >= 0 ? '+' : ''}{stats.customGap}h vs restant</span>
+              <strong>{stats.customPlanned}h {t.plannedHours}</strong>
+              <span>{stats.customDone}h {t.checkedHours} | {stats.customGap >= 0 ? '+' : ''}{stats.customGap}h {t.vsRemaining}</span>
             </div>
 
             {!isAddingPlanItem ? (
               <button className="primaryButton fullWidth" type="button" onClick={startPlanItem}>
-                <Plus size={17} /> Ajouter
+                <Plus size={17} /> {t.add}
               </button>
             ) : (
               <div className="planItem draftPlanItem">
                 <div className="planItemTop">
                   <input type="date" value={planDraft.date} onChange={(event) => setPlanDraft((current) => ({ ...current, date: event.target.value }))} />
                   <input type="number" min="0" step="0.25" value={planDraft.hours} onChange={(event) => setPlanDraft((current) => ({ ...current, hours: Number(event.target.value) }))} />
-                  <button className="iconButton compact" type="button" title="Annuler" onClick={() => setIsAddingPlanItem(false)}>
+                  <button className="iconButton compact" type="button" title={t.cancel} onClick={() => setIsAddingPlanItem(false)}>
                     <Trash2 size={15} />
                   </button>
                 </div>
                 <select value={planDraft.courseId} onChange={(event) => setPlanDraft((current) => ({ ...current, courseId: event.target.value }))}>
-                  <option value="">Choisir un cours</option>
+                  <option value="">{t.chooseCourse}</option>
                   {planCourseOptions(planDraft.courseId).map((course) => (
                     <option key={course.id} value={course.id}>{localizedCourseSubject(course, settings.language)}</option>
                   ))}
                 </select>
                 <p className="courseHoursHint">{plannedCourseLabel(planDraft.courseId, Number(planDraft.hours) || 0)}</p>
-                <input placeholder="Note" value={planDraft.note} onChange={(event) => setPlanDraft((current) => ({ ...current, note: event.target.value }))} />
+                <input placeholder={t.note} value={planDraft.note} onChange={(event) => setPlanDraft((current) => ({ ...current, note: event.target.value }))} />
                 <button className="primaryButton fullWidth" type="button" disabled={!planDraft.courseId} onClick={validatePlanItem}>
-                  <Check size={17} /> Valider
+                  <Check size={17} /> {t.validate}
                 </button>
               </div>
             )}
@@ -1089,11 +1290,11 @@ function App() {
             <div className="planWeekList">
               {customWeeks.map((week) => (
                 <section className="planWeek" key={week.weekStart}>
-                  <h3>Semaine {shortDateLabel(week.weekStart)} - {shortDateLabel(week.weekEnd)}</h3>
+                  <h3>{t.week} {shortDateLabel(week.weekStart, settings.language)} - {shortDateLabel(week.weekEnd, settings.language)}</h3>
                   {week.days.map((day) => (
                     <div className="planDay" key={day.date}>
                       <div className="planDayHeader">
-                        <strong>{shortDateLabel(day.date)}</strong>
+                        <strong>{shortDateLabel(day.date, settings.language)}</strong>
                         <span className={day.totalHours > settings.dailyHours ? 'over' : ''}>
                           {day.totalHours}/{settings.dailyHours}h
                         </span>
@@ -1104,22 +1305,22 @@ function App() {
                             <div className="planItemTop">
                               <label className="planDoneToggle">
                                 <input type="checkbox" checked={item.done} onChange={(event) => updatePlanItem(item.id, { done: event.target.checked })} />
-                                <span>{item.done ? 'Fait' : 'A faire'}</span>
+                                <span>{item.done ? t.done : t.todo}</span>
                               </label>
                               <input type="date" value={item.date} onChange={(event) => updatePlanItem(item.id, { date: event.target.value })} />
                               <input type="number" min="0" step="0.25" value={item.hours} onChange={(event) => updatePlanItem(item.id, { hours: Number(event.target.value) })} />
-                              <button className="iconButton compact" type="button" title="Supprimer la seance" onClick={() => removePlanItem(item.id)}>
+                              <button className="iconButton compact" type="button" title={t.deleteSession} onClick={() => removePlanItem(item.id)}>
                                 <Trash2 size={15} />
                               </button>
                             </div>
                             <select value={item.courseId} onChange={(event) => updatePlanItem(item.id, { courseId: event.target.value })}>
-                              <option value="">Choisir un cours</option>
+                              <option value="">{t.chooseCourse}</option>
                               {planCourseOptions(item.courseId).map((course) => (
                                 <option key={course.id} value={course.id}>{localizedCourseSubject(course, settings.language)}</option>
                               ))}
                             </select>
                             <p className="courseHoursHint">{plannedCourseLabel(item.courseId)}</p>
-                            <input placeholder="Note" value={item.note} onChange={(event) => updatePlanItem(item.id, { note: event.target.value })} />
+                            <input placeholder={t.note} value={item.note} onChange={(event) => updatePlanItem(item.id, { note: event.target.value })} />
                             {item.note.trim() && <p>{item.note}</p>}
                           </div>
                         ))}
@@ -1128,7 +1329,7 @@ function App() {
                   ))}
                 </section>
               ))}
-              {!customSchedule.length && <p className="empty">Ajoute tes seances avec les cours et les heures que tu veux.</p>}
+              {!customSchedule.length && <p className="empty">{t.emptyPlan}</p>}
             </div>
           </div>
           </div>
@@ -1139,29 +1340,30 @@ function App() {
           <div className="tableToolbar">
             <div className="searchBox">
               <Search size={17} />
-              <input placeholder="Chercher un cours ou une remarque" value={query} onChange={(event) => setQuery(event.target.value)} />
+              <input placeholder={t.search} value={query} onChange={(event) => setQuery(event.target.value)} />
             </div>
             <select value={filter} onChange={(event) => setFilter(event.target.value as typeof filter)}>
-              <option value="all">Tous</option>
-              <option value="todo">A faire</option>
-              <option value="done">Pass1 fini</option>
-              <option value="review">Review due</option>
-              <option value="over">Depassement</option>
+              <option value="all">{t.all}</option>
+              <option value="todo">{t.todo}</option>
+              <option value="done">Pass1 {t.done}</option>
+              <option value="review">{t.reviewDue}</option>
+              <option value="over">{t.overrun}</option>
             </select>
-            <select value={sortMode} onChange={(event) => setSortMode(event.target.value as SortMode)} title="Tri">
-              <option value="default">Tri: ordre</option>
-              <option value="name">Tri: nom</option>
-              <option value="pages-desc">Tri: pages</option>
-              <option value="goal-desc">Tri: goal</option>
-              <option value="pass1-desc">Tri: pass1</option>
-              <option value="delta-desc">Tri: ecart</option>
-              <option value="review-asc">Tri: review</option>
+            <select value={sortMode} onChange={(event) => setSortMode(event.target.value as SortMode)} title={t.sort}>
+              <option value="default">{t.sortOrder}</option>
+              <option value="name">{t.sortName}</option>
+              <option value="pages-desc">{t.sortPages}</option>
+              <option value="goal-desc">{t.sortGoal}</option>
+              <option value="pass1-desc">{t.sortPass1}</option>
+              <option value="delta-desc">{t.sortGap}</option>
+              <option value="review-asc">{t.sortReview}</option>
+              <option value="modified-desc">{t.sortModified}</option>
             </select>
             <button className="primaryButton" type="button" onClick={() => setIsPlanningOpen(true)}>
-              <CalendarDays size={17} /> Planning
+              <CalendarDays size={17} /> {t.planning}
             </button>
             <button className="primaryButton" type="button" onClick={addCourse}>
-              <Plus size={17} /> Cours
+              <Plus size={17} /> {t.courses}
             </button>
           </div>
 
@@ -1169,16 +1371,16 @@ function App() {
             <table>
               <thead>
                 <tr>
-                  <th>Cours</th>
-                  <th>Pages</th>
-                  <th>Goal</th>
+                  <th>{t.course}</th>
+                  <th>{t.pages}</th>
+                  <th>{t.goal}</th>
                   <th>Pass1</th>
-                  <th>Etat</th>
-                  <th>Review</th>
-                  <th>Series</th>
+                  <th>{t.status}</th>
+                  <th>{t.review}</th>
+                  <th>{t.series}</th>
                   <th>FC</th>
-                  <th>Difficulte</th>
-                  <th>Remarques</th>
+                  <th>{t.difficulty}</th>
+                  <th>{t.remarks}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -1202,7 +1404,7 @@ function App() {
                           <button
                             className={`linkEditButton ${course.pdfUrl ? 'active' : ''}`}
                             type="button"
-                            title={course.pdfUrl ? 'Modifier le lien PDF' : 'Ajouter un lien PDF'}
+                            title={course.pdfUrl ? t.editPdf : t.addPdf}
                             onClick={() => editPdfUrl(course)}
                           >
                             <Link size={14} />
@@ -1210,7 +1412,7 @@ function App() {
                           <button
                             className="linkEditButton"
                             type="button"
-                            title="Modifier le nom"
+                            title={t.editName}
                             onClick={() => editCourseName(course)}
                           >
                             <Pencil size={14} />
@@ -1220,14 +1422,14 @@ function App() {
                       <td><NumberInput value={course.pages} onChange={(pages) => updateCourse(course.id, { pages })} /></td>
                       <td className="goalCell">{goal}h</td>
                       <td><NullableNumberInput value={course.pass1Hours} onChange={(pass1Hours) => updateCourse(course.id, { pass1Hours })} /></td>
-                      <td><span className={`statusPill ${status}`}>{delta === null ? 'pending' : `${delta > 0 ? '+' : ''}${delta}h`}</span></td>
+                      <td><span className={`statusPill ${status}`}>{delta === null ? t.pending : `${delta > 0 ? '+' : ''}${delta}h`}</span></td>
                       <td><input type="date" value={course.lastReview} onChange={(event) => updateCourse(course.id, { lastReview: event.target.value })} /></td>
                       <td><NullableNumberInput value={course.seriesHours} onChange={(seriesHours) => updateCourse(course.id, { seriesHours })} /></td>
                       <td className="checkCell">
                         <button
                           className={`checkButton ${course.flashcards ? 'active' : ''}`}
                           type="button"
-                          title="Flashcards"
+                          title={t.flashcards}
                           onClick={() => updateCourse(course.id, { flashcards: !course.flashcards })}
                         >
                           <Check size={15} />
@@ -1235,17 +1437,17 @@ function App() {
                       </td>
                       <td>
                         <select value={course.difficulty} onChange={(event) => updateCourse(course.id, { difficulty: event.target.value as Difficulty })}>
-                          <option value="easy">easy</option>
-                          <option value="medium">medium</option>
-                          <option value="hard">hard</option>
-                          <option value="very-hard">very hard</option>
+                          <option value="easy">{t.difficulties.easy}</option>
+                          <option value="medium">{t.difficulties.medium}</option>
+                          <option value="hard">{t.difficulties.hard}</option>
+                          <option value="very-hard">{t.difficulties['very-hard']}</option>
                         </select>
                       </td>
                       <td className="remarksCell">
                         <textarea value={course.remarks} onChange={(event) => updateCourse(course.id, { remarks: event.target.value })} />
                       </td>
                       <td>
-                        <button className="iconButton compact" type="button" title="Supprimer" onClick={() => setCourses((current) => current.filter((item) => item.id !== course.id))}>
+                        <button className="iconButton compact" type="button" title={t.delete} onClick={() => setCourses((current) => current.filter((item) => item.id !== course.id))}>
                           <Trash2 size={15} />
                         </button>
                       </td>
