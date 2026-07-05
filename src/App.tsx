@@ -881,7 +881,12 @@ function App() {
       if (sortMode === 'pass1-desc') return (b.pass1Hours ?? -1) - (a.pass1Hours ?? -1)
       if (sortMode === 'delta-desc') return ((b.pass1Hours ?? plannedHours(b, settings)) - plannedHours(b, settings)) - ((a.pass1Hours ?? plannedHours(a, settings)) - plannedHours(a, settings))
       if (sortMode === 'review-asc') return (a.lastReview || '9999-99-99').localeCompare(b.lastReview || '9999-99-99')
-      if (sortMode === 'modified-desc') return (b.pass1Modified || '').localeCompare(a.pass1Modified || '')
+      if (sortMode === 'modified-desc') {
+        const aHasPass1 = a.pass1Hours !== null
+        const bHasPass1 = b.pass1Hours !== null
+        if (aHasPass1 !== bHasPass1) return aHasPass1 ? -1 : 1
+        return (b.pass1Modified || '').localeCompare(a.pass1Modified || '')
+      }
       return courses.indexOf(a) - courses.indexOf(b)
     })
   }, [courses, filter, query, settings, sortMode])
