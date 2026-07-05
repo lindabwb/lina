@@ -30,11 +30,34 @@
 body {
   margin: 0;
   min-width: 320px;
+  background: #fff1f7;
+}
+
+.ditherBackground {
+  inset: 0;
+  opacity: .54;
+  pointer-events: auto;
+  position: fixed;
+  z-index: 0;
+}
+
+.ditherBackground::after {
+  background:
+    radial-gradient(circle at 50% 12%, transparent 0%, rgba(255, 241, 247, .14) 54%, rgba(255, 241, 247, .52) 100%),
+    linear-gradient(180deg, rgba(255, 247, 251, .12), rgba(255, 241, 247, .44));
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.ditherFallback {
   background:
     radial-gradient(circle at 16% -10%, rgba(244, 114, 182, .32), transparent 34%),
     radial-gradient(circle at 86% 2%, rgba(251, 207, 232, .52), transparent 30%),
-    radial-gradient(circle at 50% 105%, rgba(190, 24, 93, .10), transparent 36%),
-    linear-gradient(180deg, #fff7fb 0%, #fff1f7 45%, #fdf2f8 100%);
+    linear-gradient(180deg, #fff7fb 0%, #fff1f7 100%);
+  height: 100%;
+  width: 100%;
 }
 
 button,
@@ -62,12 +85,16 @@ button:disabled {
   display: flex;
   min-height: 100vh;
   padding: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .authPanel {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(255, 255, 255, .90)),
+    linear-gradient(180deg, rgba(255, 255, 255, .78), rgba(255, 255, 255, .62)),
     radial-gradient(circle at 15% 0%, rgba(244, 114, 182, .20), transparent 38%);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
   border: 1px solid rgba(255, 255, 255, .78);
   border-radius: 8px;
   box-shadow: 0 24px 70px rgba(24, 33, 47, .12);
@@ -154,17 +181,20 @@ button:disabled {
   width: min(1500px, 100%);
   margin: 0 auto;
   padding: 24px;
+  position: relative;
+  z-index: 1;
 }
 
 .topBar {
   align-items: center;
   background:
-    linear-gradient(120deg, rgba(255, 255, 255, .94), rgba(255, 241, 247, .84)),
+    linear-gradient(120deg, rgba(255, 255, 255, .74), rgba(255, 241, 247, .54)),
     radial-gradient(circle at 14% 0%, rgba(244, 114, 182, .24), transparent 34%);
   border: 1px solid rgba(244, 207, 224, .86);
   border-radius: 10px;
   box-shadow: var(--shadow);
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
   display: flex;
   gap: 20px;
   justify-content: space-between;
@@ -353,7 +383,9 @@ h2 {
 }
 
 .settingsGrid label {
-  background: rgba(255, 255, 255, .86);
+  background: rgba(255, 255, 255, .68);
+  backdrop-filter: blur(10px) saturate(126%);
+  -webkit-backdrop-filter: blur(10px) saturate(126%);
   border: 1px solid rgba(244, 207, 224, .88);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(24, 33, 47, .04);
@@ -419,7 +451,9 @@ td textarea:focus,
 
 .metric {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, .95), rgba(255, 247, 251, .92));
+    linear-gradient(180deg, rgba(255, 255, 255, .72), rgba(255, 247, 251, .56));
+  backdrop-filter: blur(10px) saturate(126%);
+  -webkit-backdrop-filter: blur(10px) saturate(126%);
   border: 1px solid rgba(244, 207, 224, .86);
   border-top: 4px solid var(--blue);
   border-radius: 8px;
@@ -473,7 +507,9 @@ td textarea:focus,
 }
 
 .tableSection {
-  background: rgba(255, 255, 255, .90);
+  background: rgba(255, 255, 255, .64);
+  backdrop-filter: blur(10px) saturate(126%);
+  -webkit-backdrop-filter: blur(10px) saturate(126%);
   border: 1px solid rgba(244, 207, 224, .88);
   border-radius: 8px;
   box-shadow: var(--shadow);
@@ -499,7 +535,9 @@ td textarea:focus,
 .planningPanel {
   animation: panelIn .18s ease-out;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, .97), rgba(255, 247, 251, .95));
+    linear-gradient(180deg, rgba(255, 255, 255, .80), rgba(255, 247, 251, .66));
+  backdrop-filter: blur(14px) saturate(132%);
+  -webkit-backdrop-filter: blur(14px) saturate(132%);
   border: 1px solid rgba(255, 255, 255, .88);
   border-radius: 8px;
   box-shadow: 0 24px 70px rgba(24, 33, 47, .22);
