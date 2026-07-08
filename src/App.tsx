@@ -504,6 +504,8 @@ const uiText = {
     plannedWord: 'planned',
     averageAbbrev: 'avg',
     totalPages: 'pages total',
+    adjustedByPace: 'adjusted by your pace',
+    plannedRemaining: 'planned remaining',
     until: 'until',
     onTrack: 'you are on pace',
     adjustPace: 'increase pace or move target',
@@ -599,6 +601,8 @@ const uiText = {
     plannedWord: 'prevues',
     averageAbbrev: 'moy',
     totalPages: 'pages au total',
+    adjustedByPace: 'ajuste selon ton rythme',
+    plannedRemaining: 'restant prevu',
     until: "jusqu'au",
     onTrack: 'tu es dans le rythme',
     adjustPace: 'augmente le rythme ou decale la cible',
@@ -832,7 +836,9 @@ function App() {
     const passPlannedDone = completedCourses.reduce((sum, course) => sum + plannedHours(course, settings), 0)
     const passDone = completedCourses.reduce((sum, course) => sum + (course.pass1Hours || 0), 0)
     const passDelta = passDone - passPlannedDone
-    const remaining = courses.reduce((sum, course) => sum + totalCourseHours(course, settings), 0)
+    const plannedRemaining = courses.reduce((sum, course) => sum + totalCourseHours(course, settings), 0)
+    const paceRatio = passPlannedDone > 0 ? passDone / passPlannedDone : 1
+    const remaining = plannedRemaining * paceRatio
     const customPlanned = settings.customPlan.reduce((sum, item) => sum + item.hours, 0)
     const customDone = settings.customPlan.reduce((sum, item) => sum + (item.done ? item.hours : 0), 0)
     const daysToTarget = daysBetween(todayIso(), settings.targetDate)
@@ -847,6 +853,8 @@ function App() {
       passDone: round(passDone, 1),
       passDelta: round(passDelta, 1),
       passAverageDelta: done ? round(passDelta / done, 1) : 0,
+      plannedRemaining: round(plannedRemaining, 1),
+      paceRatio: round(paceRatio, 2),
       remaining: round(remaining, 1),
       customPlanned: round(customPlanned, 1),
       customDone: round(customDone, 1),
@@ -1258,7 +1266,7 @@ function App() {
           hint={`${stats.passDone}h ${t.doneWord} / ${stats.passPlannedDone}h ${t.plannedWord}, ${t.averageAbbrev} ${stats.passAverageDelta > 0 ? '+' : ''}${stats.passAverageDelta}h`}
           tone={stats.done === 0 ? 'blue' : stats.passDelta > 0 ? 'red' : 'green'}
         />
-        <Metric label={t.remainingEstimate} value={`${stats.remaining}h`} hint={`${stats.totalPages} ${t.totalPages}`} tone="amber" />
+        <Metric label={t.remainingEstimate} value={`${stats.remaining}h`} hint={`${t.adjustedByPace} x${stats.paceRatio} | ${stats.plannedRemaining}h ${t.plannedRemaining}`} tone="amber" />
         <Metric label={t.requiredPace} value={`${stats.dailyRequired}h/j`} hint={`${t.until} ${settings.targetDate}`} tone={stats.isOnTrack ? 'green' : 'red'} />
         <Metric label={t.predictedFinish} value={stats.predictedFinish} hint={stats.isOnTrack ? t.onTrack : t.adjustPace} tone={stats.isOnTrack ? 'green' : 'red'} />
       </section>
