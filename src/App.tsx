@@ -17,7 +17,6 @@ import {
   Upload,
   X,
 } from 'lucide-react'
-import { DitheredWaves } from 'ditherwave'
 import * as XLSX from 'xlsx'
 
 type Difficulty = 'easy' | 'medium' | 'hard' | 'very-hard'
@@ -1139,65 +1138,57 @@ function App() {
 
   if (isAuthLoading && !user) {
     return (
-      <>
-        <AppBackground />
-        <main className="authShell">
-          <div className="authPanel">
-            <p className="eyebrow">{t.appName}</p>
-            <h1>{t.loading}</h1>
-          </div>
-        </main>
-      </>
+      <main className="authShell">
+        <div className="authPanel">
+          <p className="eyebrow">{t.appName}</p>
+          <h1>{t.loading}</h1>
+        </div>
+      </main>
     )
   }
 
   if (!user) {
     return (
-      <>
-        <AppBackground />
-        <main className="authShell">
-          <form className="authPanel" onSubmit={submitAuth}>
-            <p className="eyebrow">{t.appName}</p>
-            <h1>{authMode === 'login' ? t.login : t.createAccount}</h1>
-            <p className="authHint">{t.authHint}</p>
+      <main className="authShell">
+        <form className="authPanel" onSubmit={submitAuth}>
+          <p className="eyebrow">{t.appName}</p>
+          <h1>{authMode === 'login' ? t.login : t.createAccount}</h1>
+          <p className="authHint">{t.authHint}</p>
 
-            {authMode === 'register' && (
-              <label>
-                {t.name}
-                <input value={authForm.name} onChange={(event) => setAuthForm((current) => ({ ...current, name: event.target.value }))} />
-              </label>
-            )}
+          {authMode === 'register' && (
             <label>
-              {t.email}
-              <input type="email" value={authForm.email} onChange={(event) => setAuthForm((current) => ({ ...current, email: event.target.value }))} />
+              {t.name}
+              <input value={authForm.name} onChange={(event) => setAuthForm((current) => ({ ...current, name: event.target.value }))} />
             </label>
-            <label>
-              {t.password}
-              <input type="password" minLength={6} value={authForm.password} onChange={(event) => setAuthForm((current) => ({ ...current, password: event.target.value }))} />
-            </label>
-            {authError && <p className="authError">{authError}</p>}
-            <button className="authSubmit" type="submit" disabled={isAuthLoading}>
-              {isAuthLoading ? t.wait : authMode === 'login' ? t.signIn : t.signUp}
-            </button>
-            <button
-              className="authSwitch"
-              type="button"
-              onClick={() => {
-                setAuthMode((current) => (current === 'login' ? 'register' : 'login'))
-                setAuthError('')
-              }}
-            >
-              {authMode === 'login' ? t.newAccount : t.alreadyAccount}
-            </button>
-          </form>
-        </main>
-      </>
+          )}
+          <label>
+            {t.email}
+            <input type="email" value={authForm.email} onChange={(event) => setAuthForm((current) => ({ ...current, email: event.target.value }))} />
+          </label>
+          <label>
+            {t.password}
+            <input type="password" minLength={6} value={authForm.password} onChange={(event) => setAuthForm((current) => ({ ...current, password: event.target.value }))} />
+          </label>
+          {authError && <p className="authError">{authError}</p>}
+          <button className="authSubmit" type="submit" disabled={isAuthLoading}>
+            {isAuthLoading ? t.wait : authMode === 'login' ? t.signIn : t.signUp}
+          </button>
+          <button
+            className="authSwitch"
+            type="button"
+            onClick={() => {
+              setAuthMode((current) => (current === 'login' ? 'register' : 'login'))
+              setAuthError('')
+            }}
+          >
+            {authMode === 'login' ? t.newAccount : t.alreadyAccount}
+          </button>
+        </form>
+      </main>
     )
   }
 
   return (
-    <>
-    <AppBackground />
     <main className="appShell">
       <header className="topBar">
         <div>
@@ -1489,27 +1480,6 @@ function App() {
           </div>
       </section>
     </main>
-    </>
-  )
-}
-
-function AppBackground() {
-  return (
-    <div className="ditherBackground" aria-hidden="true">
-      <DitheredWaves
-        waveColor="#ec4899"
-        baseColor="#fff1f7"
-        disableAnimation={false}
-        enableMouseInteraction
-        mouseRadius={0.4}
-        colorNum={4}
-        pixelSize={1}
-        waveAmplitude={0.3}
-        waveFrequency={3.5}
-        waveSpeed={0.01}
-        fallback={<div className="ditherFallback" />}
-      />
-    </div>
   )
 }
 
